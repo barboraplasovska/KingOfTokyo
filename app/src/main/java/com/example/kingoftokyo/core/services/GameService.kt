@@ -15,46 +15,6 @@ class GameService {
         }
     }
 
-    fun applyCardEffect(card: CardModel, currentPlayer: PlayerModel, playerList: List<PlayerModel>, gameService: GameService) {
-        when (card.targetType) {
-            TargetType.SELF -> {
-                applyEffect(card, currentPlayer, playerList, gameService)
-            }
-            TargetType.ALL_PLAYERS -> {
-                playerList.forEach { applyEffect(card, it, playerList, gameService) }
-            }
-            TargetType.OTHER_PLAYERS -> {
-                playerList.filter { it != currentPlayer }.forEach { applyEffect(card, it, playerList, gameService) }
-            }
-            TargetType.PLAYERS_IN_TOKYO -> {
-                playerList.filter { it.isInTokyo }.forEach { applyEffect(card, it, playerList, gameService) }
-            }
-            TargetType.OPPONENT -> {
-                val opponent = playerList.firstOrNull { it != currentPlayer && !it.isInTokyo }
-                opponent?.let { applyEffect(card, it, playerList, gameService) }
-            }
-        }
-    }
-
-    fun applyEffect(card: CardModel, player: PlayerModel, playerList: List<PlayerModel>) {
-        when (card.effectType) {
-            LIFE_POINTS -> {
-                applyHeartEffect(player, card.effectAmount)
-            }
-            ENERGY_POINTS -> {
-                .applyLightningEffect(player, card.effectAmount)
-            }
-            VICTORY_POINTS -> {
-                gameService.applyVictoryEffects(player, card.effectAmount)
-            }
-            else -> {
-                // Do nothing
-                break
-            }
-        }
-    }
-
-
     fun applyDiceEffects(currentPlayer: PlayerModel, playerList: List<PlayerModel>, diceList: List<DiceModel>) {
         val victoryDices = MutableList(3) { 0 }
         diceList.forEach { dice ->
@@ -69,7 +29,6 @@ class GameService {
         }
         applyVictoryEffects(currentPlayer, victoryDices)
     }
-
 
    private fun applyClawEffect(currentPlayer: PlayerModel, playerList: List<PlayerModel>, points: Int = 1) {
        val isInTokyo = currentPlayer.isInTokyo
