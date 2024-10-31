@@ -24,7 +24,8 @@ class PlayerModel(
     }
 
     fun heal(healing: Int) {
-        lifePoints += healing
+        if (lifePoints < 10)
+            lifePoints += healing
     }
 
     fun gainEnergy(energy: Int) {
