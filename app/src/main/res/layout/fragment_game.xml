@@ -1,14 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.fragments.GameFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-<!--    <TextView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:text="@string/hello_blank_fragment" />-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+        <androidx.appcompat.widget.Toolbar
+                android:id="@+id/appBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#618284"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                    android:id="@+id/monsterPickerTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Turn n°1"
+                    android:textSize="24sp"
+                    android:textColor="#ffffff"
+                    android:padding="16dp" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <androidx.fragment.app.FragmentContainerView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:name="com.example.kingoftokyo.ui.fragments.MonsterCardFragment"
+                android:id="@+id/demonCard"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="167dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="fragmentContainerView2" />
+
+        <androidx.fragment.app.FragmentContainerView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:name="com.example.kingoftokyo.ui.fragments.MonsterCardFragment"
+                android:id="@+id/dragonCard"
+                app:layout_constraintStart_toEndOf="@+id/demonCard"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="176dp"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

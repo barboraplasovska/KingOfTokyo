@@ -1,4 +1,4 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true" android:drawable="@drawable/monster_card_selected_background" />
+    <item android:state_selected="true" android:drawable="@drawable/monster_card_selected_background" />
     <item android:drawable="@drawable/monster_card_background" />
 </selector>
