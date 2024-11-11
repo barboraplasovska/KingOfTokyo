@@ -19,7 +19,7 @@
                 android:layout_width="75dp"
                 android:layout_height="75dp"
                 android:layout_gravity="center"
-                android:src="@drawable/demon"
+                android:src="@drawable/dice_one"
         android:contentDescription="Dice Face" />
 
         <!-- Locked Overlay (gray) -->

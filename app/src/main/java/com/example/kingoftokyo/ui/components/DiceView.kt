@@ -28,12 +28,12 @@ class DiceView(context: Context, attrs: AttributeSet) : FrameLayout(context, att
 
     fun setDiceImage(face: DiceFace) {
         val resId = when(face) {
-            DiceFace.ONE -> R.drawable.demon
-            DiceFace.TWO -> R.drawable.demon
-            DiceFace.THREE -> R.drawable.demon
-            DiceFace.CLAW -> R.drawable.demon
-            DiceFace.HEART -> R.drawable.demon
-            DiceFace.LIGHTNING -> R.drawable.demon
+            DiceFace.ONE -> R.drawable.dice_one
+            DiceFace.TWO -> R.drawable.dice_two
+            DiceFace.THREE -> R.drawable.dice_three
+            DiceFace.CLAW -> R.drawable.dice_claw
+            DiceFace.HEART -> R.drawable.dice_heart
+            DiceFace.LIGHTNING -> R.drawable.dice_lightning
         }
         diceImage.setImageResource(resId)
     }
