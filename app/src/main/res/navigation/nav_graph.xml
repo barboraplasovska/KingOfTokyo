@@ -18,5 +18,22 @@
     <fragment
             android:id="@+id/pickMonsterFragment"
             android:name="com.example.kingoftokyo.ui.fragments.PickMonsterFragment"
-            android:label="PickMonsterFragment" />
+            android:label="PickMonsterFragment" >
+        <action
+                android:id="@+id/action_pickMonsterFragment_to_gameFragment"
+                app:destination="@id/gameFragment" />
+    </fragment>
+
+    <!-- Game Fragment -->
+    <fragment
+            android:id="@+id/gameFragment"
+            android:name="com.example.kingoftokyo.ui.fragments.GameFragment"
+            android:label="GameFragment">
+        <!-- Argument to receive the selected monster -->
+        <argument
+                android:name="selectedMonster"
+                app:argType="integer"
+                android:defaultValue="0" />
+    </fragment>
+
 </navigation>
