@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.example.kingoftokyo.R
 import com.example.kingoftokyo.core.enums.DiceFace
@@ -20,8 +21,10 @@ class DiceFragment : Fragment() {
     private lateinit var diceModels: List<DiceModel>
     private lateinit var rollButton: Button
     private lateinit var validateButton: Button
+    private lateinit var buttonContainer: LinearLayout
 
-    private var hasRolled = false  // Flag to track if dice have been rolled
+    private var hasRolled = false
+    private var isBotTurn = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,6 +40,7 @@ class DiceFragment : Fragment() {
 
         rollButton = view.findViewById(R.id.rollButton)
         validateButton = view.findViewById(R.id.validateButton)
+        buttonContainer = view.findViewById(R.id.buttonContainer)
 
         setupDice(view)
 
@@ -76,7 +80,7 @@ class DiceFragment : Fragment() {
     }
 
     private fun onDiceClick(index: Int) {
-        if (!hasRolled) {
+        if (!hasRolled || isBotTurn) {
             // Prevent locking until the first roll
             return
         }
@@ -102,6 +106,16 @@ class DiceFragment : Fragment() {
         diceModels.forEachIndexed { index, diceModel ->
             updateDiceView(index)
         }
+    }
+
+    public fun setBotTurn() {
+        buttonContainer.visibility = View.GONE
+        isBotTurn = true
+    }
+
+    public fun setPlayerTurn() {
+        buttonContainer.visibility = View.VISIBLE
+        isBotTurn = false
     }
 
     private fun validateDice() {

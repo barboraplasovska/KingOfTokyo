@@ -23,6 +23,9 @@ class MainViewModel : ViewModel() {
         botService = BotService(gameService)
     }
 
+    fun getCurrentPlayer(): PlayerModel {
+        return _players[currentPlayerIndex]
+    }
 
     fun startGame(selectedMonster: Int) {
         _players.clear()

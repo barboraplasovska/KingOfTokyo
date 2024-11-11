@@ -53,7 +53,7 @@ class GameService {
 
      fun applyVictoryEffects(currentPlayer: PlayerModel, dices: MutableList<Int>) {
         var totalPoints : Int = 0
-        for (i in 0..dices.size) {
+        for (i in 0..dices.size-1) {
             var nbDices = dices[i]
             if (nbDices >= 3) {
                 totalPoints += (i + 1)
