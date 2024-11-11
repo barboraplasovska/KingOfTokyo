@@ -46,7 +46,7 @@
                 android:padding="8dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:id="@+id/monster1">
+                android:id="@+id/monsterDemon">
 
             <ImageView
                     android:layout_width="150dp"
@@ -73,7 +73,7 @@
                 android:padding="8dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:id="@+id/monster2">
+                android:id="@+id/monsterDragon">
 
             <ImageView
                     android:layout_width="150dp"
@@ -100,7 +100,7 @@
                 android:padding="8dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:id="@+id/monster3">
+                android:id="@+id/monsterLizard">
 
             <ImageView
                     android:layout_width="150dp"
@@ -127,7 +127,7 @@
                 android:padding="8dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:id="@+id/monster4">
+                android:id="@+id/monsterRobot">
 
             <ImageView
                     android:layout_width="150dp"

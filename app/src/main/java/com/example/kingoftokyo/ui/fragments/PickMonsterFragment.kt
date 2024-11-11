@@ -24,30 +24,30 @@ class PickMonsterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val nextButton: Button = view.findViewById(R.id.nextButton)
-        val monster1: LinearLayout = view.findViewById(R.id.monster1)
-        val monster2: LinearLayout = view.findViewById(R.id.monster2)
-        val monster3: LinearLayout = view.findViewById(R.id.monster3)
-        val monster4: LinearLayout = view.findViewById(R.id.monster4)
+        val monsterDemon: LinearLayout = view.findViewById(R.id.monsterDemon)
+        val monsterDragon: LinearLayout = view.findViewById(R.id.monsterDragon)
+        val monsterLizard: LinearLayout = view.findViewById(R.id.monsterLizard)
+        val monsterRobot: LinearLayout = view.findViewById(R.id.monsterRobot)
 
-        monster1.setOnClickListener {
+        monsterDemon.setOnClickListener {
             // Update selectedMonster value and UI
             selectedMonster = 0
-            setSelectedMonster(monster1, monster2, monster3, monster4)
+            setSelectedMonster(monsterDemon, monsterDragon, monsterLizard, monsterRobot)
         }
 
-        monster2.setOnClickListener {
+        monsterDragon.setOnClickListener {
             selectedMonster = 1
-            setSelectedMonster(monster2, monster1, monster3, monster4)
+            setSelectedMonster(monsterDragon, monsterDemon, monsterLizard, monsterRobot)
         }
 
-        monster3.setOnClickListener {
+        monsterLizard.setOnClickListener {
             selectedMonster = 2
-            setSelectedMonster(monster3, monster1, monster2, monster4)
+            setSelectedMonster(monsterLizard, monsterDemon, monsterDragon, monsterRobot)
         }
 
-        monster4.setOnClickListener {
+        monsterRobot.setOnClickListener {
             selectedMonster = 3
-            setSelectedMonster(monster4, monster1, monster2, monster3)
+            setSelectedMonster(monsterRobot, monsterDemon, monsterDragon, monsterLizard)
         }
 
         nextButton.setOnClickListener {

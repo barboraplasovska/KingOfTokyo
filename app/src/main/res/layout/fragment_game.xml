@@ -2,14 +2,15 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.fragments.GameFragment">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.fragments.GameFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+        <!-- Toolbar with title -->
         <androidx.appcompat.widget.Toolbar
                 android:id="@+id/appBar"
                 android:layout_width="match_parent"
@@ -31,24 +32,46 @@
                     android:padding="16dp" />
         </androidx.appcompat.widget.Toolbar>
 
+        <!-- Monster Cards (2x2 grid) -->
         <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/demonCard"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:name="com.example.kingoftokyo.ui.fragments.MonsterCardFragment"
-                android:id="@+id/demonCard"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="167dp"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@+id/appBar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/dragonCard"
+                android:layout_margin="16dp" />
 
         <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/dragonCard"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:name="com.example.kingoftokyo.ui.fragments.MonsterCardFragment"
-                android:id="@+id/dragonCard"
+                app:layout_constraintTop_toBottomOf="@+id/appBar"
                 app:layout_constraintStart_toEndOf="@+id/demonCard"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="176dp"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="16dp" />
+
+        <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/robotCard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:name="com.example.kingoftokyo.ui.fragments.MonsterCardFragment"
+                app:layout_constraintTop_toBottomOf="@+id/demonCard"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/lizardCard"
+                android:layout_margin="16dp" />
+
+        <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/lizardCard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:name="com.example.kingoftokyo.ui.fragments.MonsterCardFragment"
+                app:layout_constraintTop_toBottomOf="@+id/dragonCard"
+                app:layout_constraintStart_toEndOf="@+id/robotCard"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="16dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
