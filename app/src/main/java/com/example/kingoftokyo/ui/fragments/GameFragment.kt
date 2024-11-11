@@ -47,6 +47,10 @@ class GameFragment : Fragment() {
             (childFragmentManager.findFragmentById(R.id.dragonCard) as? MonsterCardFragment)?.setMonsterData(dragonPlayer)
             (childFragmentManager.findFragmentById(R.id.robotCard) as? MonsterCardFragment)?.setMonsterData(robotPlayer)
             (childFragmentManager.findFragmentById(R.id.lizardCard) as? MonsterCardFragment)?.setMonsterData(lizardPlayer)
+
+            childFragmentManager.beginTransaction()
+                .replace(R.id.diceFragmentContainer, DiceFragment())
+                .commit()
         }
     }
 }
