@@ -8,9 +8,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="#a6c7b9">
 
-        <!-- Toolbar with title -->
         <androidx.appcompat.widget.Toolbar
                 android:id="@+id/appBar"
                 android:layout_width="match_parent"
@@ -32,32 +32,36 @@
                     android:padding="16dp" />
         </androidx.appcompat.widget.Toolbar>
 
-        <!-- Monster Cards (2x2 grid) -->
         <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/demonCard"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:name="com.example.kingoftokyo.ui.fragments.MonsterCardFragment"
+                android:background="@drawable/monster_card_background"
                 app:layout_constraintTop_toBottomOf="@+id/appBar"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/dragonCard"
-                android:layout_margin="16dp" />
+                android:layout_margin="16dp"
+                android:layout_marginTop="10dp" />
 
         <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/dragonCard"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:name="com.example.kingoftokyo.ui.fragments.MonsterCardFragment"
+                android:background="@drawable/monster_card_background"
                 app:layout_constraintTop_toBottomOf="@+id/appBar"
                 app:layout_constraintStart_toEndOf="@+id/demonCard"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_margin="16dp" />
+                android:layout_margin="16dp"
+                android:layout_marginTop="10dp" />
 
         <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/robotCard"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:name="com.example.kingoftokyo.ui.fragments.MonsterCardFragment"
+                android:background="@drawable/monster_card_background"
                 app:layout_constraintTop_toBottomOf="@+id/demonCard"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/lizardCard"
@@ -68,6 +72,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:name="com.example.kingoftokyo.ui.fragments.MonsterCardFragment"
+                android:background="@drawable/monster_card_background"
                 app:layout_constraintTop_toBottomOf="@+id/dragonCard"
                 app:layout_constraintStart_toEndOf="@+id/robotCard"
                 app:layout_constraintEnd_toEndOf="parent"
