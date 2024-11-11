@@ -23,7 +23,10 @@ class MonsterCardFragment : Fragment() {
     private lateinit var heartValue: TextView
     private lateinit var lightningValue: TextView
     private lateinit var trophyValue: TextView
-    private lateinit var layout: ConstraintLayout
+    private lateinit var heartImageView: ImageView
+    private lateinit var deadOverlay: View
+    private lateinit var deadIcon: ImageView
+    private lateinit var tokyoTower: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,6 +44,10 @@ class MonsterCardFragment : Fragment() {
         heartValue = view.findViewById(R.id.heartValue)
         lightningValue = view.findViewById(R.id.lightningValue)
         trophyValue = view.findViewById(R.id.trophyValue)
+        heartImageView = view.findViewById(R.id.heartIcon)
+        deadOverlay = view.findViewById(R.id.deadOverlay)
+        deadIcon = view.findViewById(R.id.deadIcon)
+        tokyoTower = view.findViewById(R.id.towerIcon)
     }
 
     fun setMonsterData(monster: PlayerModel) {
@@ -58,20 +65,17 @@ class MonsterCardFragment : Fragment() {
         trophyValue.text = monster.victoryPoints.toString()
     }
 
-    fun setCurrentPlayerBg() {
-        view?.setBackgroundResource(R.drawable.monster_current_player_background)
+    fun isDead() {
+        deadOverlay.visibility = View.VISIBLE
+        deadIcon.visibility = View.VISIBLE
+        heartImageView.setImageResource(R.drawable.broken_heart)
     }
 
-    fun selectCurrentPlayer() {
-
-       //view.setBackgroundResource(R.drawable.monster_player_selected)
+    fun inTokyo() {
+        tokyoTower.visibility = View.VISIBLE
     }
 
-    fun setUser() {
-        view?.setBackgroundResource(R.drawable.monster_card_selected_background)
-    }
-
-    fun unsetBg() {
-        view?.setBackgroundResource(R.drawable.monster_card_background)
+    fun notInTokyo() {
+        tokyoTower.visibility = View.GONE
     }
 }

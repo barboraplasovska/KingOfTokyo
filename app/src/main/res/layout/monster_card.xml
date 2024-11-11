@@ -45,7 +45,8 @@
             android:text="10"
             app:layout_constraintStart_toEndOf="@+id/heartIcon"
             app:layout_constraintTop_toTopOf="@+id/heartIcon"
-            app:layout_constraintBottom_toBottomOf="@+id/heartIcon" />
+            app:layout_constraintBottom_toBottomOf="@+id/heartIcon"
+            android:layout_marginStart="3dp" />
 
     <ImageView
             android:id="@+id/lightningIcon"
@@ -65,7 +66,7 @@
             app:layout_constraintTop_toTopOf="@id/lightningIcon"
             app:layout_constraintStart_toEndOf="@id/lightningIcon"
             app:layout_constraintBottom_toBottomOf="@id/lightningIcon"
-            android:layout_marginEnd="16dp" />
+            android:layout_marginStart="3dp" />
 
     <ImageView
             android:id="@+id/trophyIcon"
@@ -84,6 +85,41 @@
             android:text="3"
             app:layout_constraintTop_toTopOf="@id/trophyIcon"
             app:layout_constraintStart_toEndOf="@id/trophyIcon"
-            app:layout_constraintBottom_toBottomOf="@id/trophyIcon" />
+            app:layout_constraintBottom_toBottomOf="@id/trophyIcon"
+            android:layout_marginStart="3dp" />
+
+    <View
+            android:id="@+id/deadOverlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/overlay_background"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+            android:id="@+id/deadIcon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/white_flag"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+            android:id="@+id/towerIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/tokyo"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@+id/monsterImage"
+            app:layout_constraintTop_toBottomOf="@+id/monsterImage"
+            android:translationX="-15dp"
+            android:translationY="-16dp"
+            android:elevation="5dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

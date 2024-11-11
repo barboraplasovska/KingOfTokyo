@@ -57,7 +57,7 @@ class MainViewModel : ViewModel() {
                 ),
                 PlayerModel(
                     monsterName = "Robot",
-                    lifePoints = 10,
+                    lifePoints = 0,
                     energyPoints = 0,
                     victoryPoints = 0,
                     isInTokyo = false,
