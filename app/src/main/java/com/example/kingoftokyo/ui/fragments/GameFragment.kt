@@ -1,5 +1,7 @@
 package com.example.kingoftokyo.ui.fragments
 
+import PlayerModel
+import android.app.Dialog
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -7,13 +9,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.kingoftokyo.R
 import com.example.kingoftokyo.core.viewModels.MainViewModel
 import com.example.kingoftokyo.core.services.GameService
@@ -71,7 +76,6 @@ class GameFragment : Fragment() {
             } else {
                 diceFragment.setPlayerTurn()
             }
-
         }
 
 
@@ -101,5 +105,29 @@ class GameFragment : Fragment() {
 
     private fun setBackgroundMonster(card: FragmentContainerView, drawable: Int) {
         card.setBackgroundResource(drawable)
+    }
+
+    private fun showGameOverModal(player: PlayerModel) {
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.game_over_modal)
+
+        val titleTextView = dialog.findViewById<TextView>(R.id.modalTitle)
+        titleTextView.text = "${player.monsterName} is the King of Tokyo"
+
+        var monsterImage: ImageView = dialog.findViewById(R.id.monsterImage)
+        when (player.monsterName) {
+            "Demon" -> monsterImage.setImageResource(R.drawable.demon)
+            "Dragon" -> monsterImage.setImageResource(R.drawable.dragon)
+            "Lizard" -> monsterImage.setImageResource(R.drawable.lizard)
+            "Robot" -> monsterImage.setImageResource(R.drawable.robot)
+        }
+
+        val dismissButton = dialog.findViewById<Button>(R.id.dismissButton)
+        dismissButton.setOnClickListener {
+            dialog.dismiss()
+            findNavController().navigate(R.id.action_gameFragment_to_welcomeFragment)
+        }
+
+        dialog.show()
     }
 }
