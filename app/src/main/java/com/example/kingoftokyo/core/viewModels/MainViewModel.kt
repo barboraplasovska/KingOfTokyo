@@ -13,7 +13,12 @@ class MainViewModel : ViewModel() {
     val players: MutableLiveData<List<PlayerModel>> = MutableLiveData()
     private var _players = mutableListOf<PlayerModel>()
     val diceList: MutableList<DiceModel> = mutableListOf()
+    val currentPlayer: MutableLiveData<PlayerModel> = MutableLiveData()
     var currentPlayerIndex: Int = 0
+        set(value) {
+            field = value
+            currentPlayer.postValue(_players.getOrNull(value))
+        }
 
     private val gameService: GameService
     private val botService: BotService
@@ -70,19 +75,19 @@ class MainViewModel : ViewModel() {
             )
         )
         players.postValue(_players)
+        currentPlayer.postValue(_players[currentPlayerIndex])
+    }
+
+    fun nextPlayer() {
+        currentPlayerIndex = (currentPlayerIndex + 1) % _players.size
     }
 
     fun botTurn() {
-        for (i in 1.._players.size) {
-            currentPlayerIndex = (currentPlayerIndex + 1) % _players.size
-            val currentPlayer = _players[currentPlayerIndex]
-            if (currentPlayer.playerType == PlayerType.BOT) {
-                botService.takeTurn(currentPlayer, _players, diceList)
-            }
-
-            if (isGameOver()) break
+        val currentPlayer = _players[currentPlayerIndex]
+        if (currentPlayer.playerType == PlayerType.BOT) {
+            botService.takeTurn(currentPlayer, _players, diceList)
         }
-        currentPlayerIndex = 0
+        nextPlayer()
     }
 
     fun lockDice(diceIndex: Int) {
