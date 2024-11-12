@@ -36,7 +36,7 @@ class DiceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        diceModels = List(6) { DiceModel(DiceFace.ONE, false) }
+        diceModels = List(6) { DiceModel(DiceFace.values().random(), false) }
 
         rollButton = view.findViewById(R.id.rollButton)
         validateButton = view.findViewById(R.id.validateButton)

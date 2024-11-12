@@ -71,14 +71,12 @@ class GameFragment : Fragment() {
 
         setBackgroundMonster(monsterCards[selectedMonster], R.drawable.monster_card_selected_background)
 
-        // Observe changes in player data and update the UI accordingly
         mainViewModel.players.observe(viewLifecycleOwner) { players ->
             val demonPlayer = players[0]
             val dragonPlayer = players[1]
             val lizardPlayer = players[2]
             val robotPlayer = players[3]
 
-            // Find each MonsterCardFragment and pass the respective PlayerModel
             (childFragmentManager.findFragmentById(R.id.demonCard) as? MonsterCardFragment)?.setMonsterData(demonPlayer)
             (childFragmentManager.findFragmentById(R.id.dragonCard) as? MonsterCardFragment)?.setMonsterData(dragonPlayer)
             (childFragmentManager.findFragmentById(R.id.robotCard) as? MonsterCardFragment)?.setMonsterData(robotPlayer)
@@ -91,6 +89,7 @@ class GameFragment : Fragment() {
             viewLifecycleOwner.lifecycleScope.launch {
                 if (currentPlayer?.playerType == PlayerType.BOT) {
                     diceFragment.setBotTurn()
+                    mainViewModel.botTurn()
                     delay(4000)
                     mainViewModel.nextPlayer()
                 } else {
@@ -103,7 +102,6 @@ class GameFragment : Fragment() {
         finishTurnButton.setOnClickListener {
             botTurn()
             mainViewModel.nextPlayer()
-            //mainViewModel.botTurn()
         }
     }
 

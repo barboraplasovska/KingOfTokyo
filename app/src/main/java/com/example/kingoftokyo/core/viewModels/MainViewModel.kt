@@ -89,7 +89,6 @@ class MainViewModel : ViewModel() {
         if (currentPlayer.playerType == PlayerType.BOT) {
             botService.takeTurn(currentPlayer, _players, diceList)
         }
-        nextPlayer()
     }
 
     fun lockDice(diceIndex: Int) {
