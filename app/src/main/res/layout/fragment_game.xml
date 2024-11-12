@@ -57,24 +57,24 @@
                 android:layout_marginTop="10dp" />
 
         <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/robotCard"
+                android:id="@+id/lizardCard"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:name="com.example.kingoftokyo.ui.fragments.MonsterCardFragment"
                 android:background="@drawable/monster_card_background"
                 app:layout_constraintTop_toBottomOf="@+id/demonCard"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/lizardCard"
+                app:layout_constraintEnd_toStartOf="@+id/robotCard"
                 android:layout_margin="16dp" />
 
         <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/lizardCard"
+                android:id="@+id/robotCard"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:name="com.example.kingoftokyo.ui.fragments.MonsterCardFragment"
                 android:background="@drawable/monster_card_background"
                 app:layout_constraintTop_toBottomOf="@+id/dragonCard"
-                app:layout_constraintStart_toEndOf="@+id/robotCard"
+                app:layout_constraintStart_toEndOf="@+id/lizardCard"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_margin="16dp" />
 
