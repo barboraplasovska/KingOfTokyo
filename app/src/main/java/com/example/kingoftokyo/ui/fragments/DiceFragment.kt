@@ -125,6 +125,21 @@ class DiceFragment : Fragment() {
         isBotTurn = false
     }
 
+    fun resetDice() {
+        // Reset each dice model with a random face and unlocked state
+        diceModels = List(6) { DiceModel(DiceFace.values().random(), false) }
+        hasRolled = 0
+        rollButton.isEnabled = true
+        rollButton.alpha = 1.0f
+        rollButton.text = "Roll"
+        validateButton.visibility = View.GONE
+
+        // Update each dice view to reflect the reset state
+        diceModels.forEachIndexed { index, diceModel ->
+            updateDiceView(index)
+        }
+    }
+
     private fun validateDice() {
         // FIXME: Logic for validating dice
     }

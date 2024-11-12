@@ -86,6 +86,8 @@ class GameFragment : Fragment() {
 
         mainViewModel.currentPlayer.observe(viewLifecycleOwner) { currentPlayer ->
             updateBg(currentPlayer)
+            if (currentPlayer.playerType == PlayerType.BOT)
+                diceFragment.resetDice()
             viewLifecycleOwner.lifecycleScope.launch {
                 if (currentPlayer?.playerType == PlayerType.BOT) {
                     diceFragment.setBotTurn()
