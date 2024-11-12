@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.kingoftokyo.R
 import com.example.kingoftokyo.core.viewModels.MainViewModel
@@ -25,6 +26,8 @@ import com.example.kingoftokyo.core.services.GameService
 import com.example.kingoftokyo.core.services.BotService
 import com.example.kingoftokyo.core.enums.PlayerType
 import com.example.kingoftokyo.ui.fragments.MonsterCardFragment
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class GameFragment : Fragment() {
 
@@ -85,18 +88,22 @@ class GameFragment : Fragment() {
 
         mainViewModel.currentPlayer.observe(viewLifecycleOwner) { currentPlayer ->
             updateBg(currentPlayer)
-            if (currentPlayer?.playerType == PlayerType.BOT) {
-                diceFragment.setBotTurn()
-                Thread.sleep(4000)
-            } else {
-                diceFragment.setPlayerTurn()
+            viewLifecycleOwner.lifecycleScope.launch {
+                if (currentPlayer?.playerType == PlayerType.BOT) {
+                    diceFragment.setBotTurn()
+                    delay(4000)
+                    mainViewModel.nextPlayer()
+                } else {
+                    diceFragment.setPlayerTurn()
+                }
             }
         }
 
 
         finishTurnButton.setOnClickListener {
             botTurn()
-            mainViewModel.botTurn()
+            mainViewModel.nextPlayer()
+            //mainViewModel.botTurn()
         }
     }
 
@@ -118,7 +125,7 @@ class GameFragment : Fragment() {
             }
         }
         else {
-            setBackgroundMonster(monsterCards[selectedMonster], R.drawable.monster_current_player_background)
+            setBackgroundMonster(monsterCards[selectedMonster], R.drawable.monster_card_selected_background)
             for (i in monsterCards.indices) {
                 if (i == selectedMonster) {
                     continue
@@ -126,10 +133,10 @@ class GameFragment : Fragment() {
                 setBackgroundMonster(monsterCards[i], R.drawable.monster_card_background)
             }
             when (currentPlayer.monsterName) {
-                "Demon" -> setBackgroundMonster(demon, R.drawable.monster_card_background)
-                "Dragon" -> setBackgroundMonster(dragon, R.drawable.monster_card_background)
-                "Lizard" -> setBackgroundMonster(lizard, R.drawable.monster_card_background)
-                "Robot" -> setBackgroundMonster(robot, R.drawable.monster_card_background)
+                "Demon" -> setBackgroundMonster(demon, R.drawable.monster_current_player_background)
+                "Dragon" -> setBackgroundMonster(dragon, R.drawable.monster_current_player_background)
+                "Lizard" -> setBackgroundMonster(lizard, R.drawable.monster_current_player_background)
+                "Robot" -> setBackgroundMonster(robot, R.drawable.monster_current_player_background)
             }
         }
     }

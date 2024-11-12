@@ -75,11 +75,13 @@ class MainViewModel : ViewModel() {
             )
         )
         players.postValue(_players)
+        currentPlayerIndex = selectedMonster
         currentPlayer.postValue(_players[currentPlayerIndex])
     }
 
     fun nextPlayer() {
         currentPlayerIndex = (currentPlayerIndex + 1) % _players.size
+        currentPlayer.postValue(_players[currentPlayerIndex])
     }
 
     fun botTurn() {
