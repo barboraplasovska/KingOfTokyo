@@ -23,7 +23,7 @@ class DiceFragment : Fragment() {
     private lateinit var validateButton: Button
     private lateinit var buttonContainer: LinearLayout
 
-    private var hasRolled = false
+    private var hasRolled = 0
     private var isBotTurn = false
 
     override fun onCreateView(
@@ -45,15 +45,22 @@ class DiceFragment : Fragment() {
         setupDice(view)
 
         rollButton.setOnClickListener {
-            if (!hasRolled) {
+            if (hasRolled == 0) {
                 // First roll, allow rolling the dice and enable locking
                 rollAllDice()
                 rollButton.text = "Reroll"
                 validateButton.visibility = View.VISIBLE
-                hasRolled = true
-            } else {
+                hasRolled++
+            }
+            else if (hasRolled <= 3){
                 // If already rolled, re-roll the unlocked dice
                 rollAllDice()
+                hasRolled++
+                if (hasRolled >= 3) {
+                    // Can't roll the dices more than 3 times
+                    rollButton.isEnabled = false
+                    rollButton.alpha = 0.5f
+                }
             }
         }
 
@@ -80,7 +87,7 @@ class DiceFragment : Fragment() {
     }
 
     private fun onDiceClick(index: Int) {
-        if (!hasRolled || isBotTurn) {
+        if (hasRolled == 0 || isBotTurn) {
             // Prevent locking until the first roll
             return
         }
