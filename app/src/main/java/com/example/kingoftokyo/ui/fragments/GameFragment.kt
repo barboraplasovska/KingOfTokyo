@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -39,6 +40,7 @@ class GameFragment : Fragment() {
     private lateinit var monsterCards: List<FragmentContainerView>
     private lateinit var diceFragment: DiceFragment
     private lateinit var finishTurnButton: Button
+    private lateinit var openCardsButton: ImageButton
     private var selectedMonster: Int = 0
 
     override fun onCreateView(
@@ -68,6 +70,7 @@ class GameFragment : Fragment() {
         robot = view.findViewById(R.id.robotCard)
         monsterCards = listOf(demon, dragon, lizard, robot)
         finishTurnButton = view.findViewById(R.id.finishTurnButton)
+        openCardsButton = view.findViewById(R.id.openCardsButton)
 
         setBackgroundMonster(monsterCards[selectedMonster], R.drawable.monster_card_selected_background)
 
@@ -100,10 +103,13 @@ class GameFragment : Fragment() {
             }
         }
 
-
         finishTurnButton.setOnClickListener {
             botTurn()
             mainViewModel.nextPlayer()
+        }
+
+        openCardsButton.setOnClickListener {
+            showCardsModal()
         }
     }
 
@@ -167,5 +173,10 @@ class GameFragment : Fragment() {
         }
 
         dialog.show()
+    }
+
+    private fun showCardsModal() {
+        val dialogFragment = CardsFragment.newInstance()
+        dialogFragment.show(childFragmentManager, "CardsFragment")
     }
 }

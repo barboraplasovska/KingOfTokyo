@@ -78,6 +78,19 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_margin="16dp" />
 
+        <!-- Button for cards modal -->
+        <ImageButton
+            android:id="@+id/openCardsButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/robotCard"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/cards" />
+
         <!-- Dice Fragment with proper vertical constraints -->
         <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/diceFragmentContainer"

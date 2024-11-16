@@ -49,9 +49,11 @@
                 android:id="@+id/monsterDemon">
 
             <ImageView
-                    android:layout_width="150dp"
-                    android:layout_height="200dp"
-                    android:src="@drawable/demon" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/demon" />
 
             <TextView
                     android:layout_width="wrap_content"
@@ -76,9 +78,11 @@
                 android:id="@+id/monsterDragon">
 
             <ImageView
-                    android:layout_width="150dp"
-                    android:layout_height="200dp"
-                    android:src="@drawable/dragon" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/dragon" />
 
             <TextView
                     android:layout_width="wrap_content"
@@ -103,9 +107,11 @@
                 android:id="@+id/monsterLizard">
 
             <ImageView
-                    android:layout_width="150dp"
-                    android:layout_height="200dp"
-                    android:src="@drawable/lizard" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/lizard" />
 
             <TextView
                     android:layout_width="wrap_content"
@@ -130,9 +136,11 @@
                 android:id="@+id/monsterRobot">
 
             <ImageView
-                    android:layout_width="150dp"
-                    android:layout_height="200dp"
-                    android:src="@drawable/robot" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/robot" />
 
             <TextView
                     android:layout_width="wrap_content"

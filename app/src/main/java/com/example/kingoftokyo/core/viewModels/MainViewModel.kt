@@ -1,11 +1,13 @@
 package com.example.kingoftokyo.core.viewModels
 
+import CardModel
 import DiceModel
 import PlayerModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kingoftokyo.core.enums.PlayerType
 import com.example.kingoftokyo.core.services.BotService
+import com.example.kingoftokyo.core.services.CardService
 import com.example.kingoftokyo.core.services.GameService
 
 class MainViewModel : ViewModel() {
@@ -19,13 +21,16 @@ class MainViewModel : ViewModel() {
             field = value
             currentPlayer.postValue(_players.getOrNull(value))
         }
+    val cards: MutableLiveData<List<CardModel>> = MutableLiveData()
 
     private val gameService: GameService
     private val botService: BotService
+    private val cardService: CardService
 
      init {
         gameService = GameService()
         botService = BotService(gameService)
+        cardService = CardService()
     }
 
     fun getCurrentPlayer(): PlayerModel {

@@ -5,10 +5,50 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragments.CardsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-<!--    <TextView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:text="@string/hello_blank_fragment" />-->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/cardsFragmentCard1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:name="com.example.kingoftokyo.ui.fragments.CardFragment"
+        android:background="@drawable/monster_card_selector"
+        android:clickable="true"
+        android:layout_margin="16dp"
+        android:layout_marginTop="10dp" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/cardsFragmentCard2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:name="com.example.kingoftokyo.ui.fragments.CardFragment"
+        android:background="@drawable/monster_card_selector"
+        android:clickable="true"
+        android:layout_margin="16dp"
+        android:layout_marginTop="10dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_centerInParent="true">
+
+        <Button
+            android:id="@+id/cardsFragmentCancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:backgroundTint="#EE8181"
+            android:textColor="#000000"
+            android:padding="15dp" />
+
+        <Button
+            android:id="@+id/cardsFragmentValidateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Validate"
+            android:backgroundTint="#B0EE81"
+            android:textColor="#000000"
+            android:padding="15dp" />
+    </LinearLayout>
 
 </FrameLayout>
