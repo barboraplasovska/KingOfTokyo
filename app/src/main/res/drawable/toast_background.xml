@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <solid android:color="#80000000"/> <!-- Ombre gris clair -->
+            <corners android:radius="16dp"/> <!-- Coins arrondis -->
+        </shape>
+    </item>
+
+    <item android:right="2dp" android:left="2dp" android:top="2dp" android:bottom="2dp">
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <solid android:color="#FFFFFF"/> <!-- Fond blanc -->
+            <corners android:radius="16dp"/> <!-- Coins arrondis -->
+        </shape>
+    </item>
+</layer-list>

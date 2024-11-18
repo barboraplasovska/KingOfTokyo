@@ -2,14 +2,17 @@ package com.example.kingoftokyo.ui.fragments
 
 import CardModel
 import android.app.Dialog
+import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
@@ -67,18 +70,23 @@ class CardsFragment : DialogFragment() {
             dismiss()
         }
         validateButton.setOnClickListener {
-            dismiss()
+            if (selectedCard != null) {
+                mainViewModel.resetCards()
+                dismiss()
+            } else {
+                val toastLayout = layoutInflater.inflate(R.layout.custom_toast_layout, null)
+                val toast = Toast(requireContext())
+                toast.duration = Toast.LENGTH_SHORT
+                toast.view = toastLayout
+                toast.setGravity(Gravity.TOP, 0, (Resources.getSystem().displayMetrics.heightPixels / 4))
+                toast.show()
+            }
         }
 
-        // Observe ViewModel to update card data
         mainViewModel.cards.observe(viewLifecycleOwner) { cards ->
             cardFragment1?.setCardData(cards[0])
             cardFragment2?.setCardData(cards[1])
         }
-    }
-
-    private fun setBackgroundCard(card: FragmentContainerView, drawable: Int) {
-        card.setBackgroundResource(drawable)
     }
 
     private fun setupCardClickListeners() {
@@ -99,10 +107,10 @@ class CardsFragment : DialogFragment() {
     private fun updateCardSelection() {
         if (selectedCard == 1) {
             card1Container.setBackgroundResource(R.drawable.card_selected_background)
-            card2Container.setBackgroundResource(R.drawable.card_unselected_background)
+            card2Container.setBackgroundResource(0)
         } else if (selectedCard == 2) {
             card2Container.setBackgroundResource(R.drawable.card_selected_background)
-            card1Container.setBackgroundResource(R.drawable.card_unselected_background)
+            card1Container.setBackgroundResource(0)
         }
     }
 
