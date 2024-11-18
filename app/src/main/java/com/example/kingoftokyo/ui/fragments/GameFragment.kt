@@ -103,6 +103,10 @@ class GameFragment : Fragment() {
             }
         }
 
+        mainViewModel.players.observe(viewLifecycleOwner) { players ->
+            updatePlayersCards(players)
+        }
+
         finishTurnButton.setOnClickListener {
             botTurn()
             mainViewModel.nextPlayer()
@@ -144,6 +148,29 @@ class GameFragment : Fragment() {
                 "Lizard" -> setBackgroundMonster(lizard, R.drawable.monster_current_player_background)
                 "Robot" -> setBackgroundMonster(robot, R.drawable.monster_current_player_background)
             }
+        }
+    }
+
+    private fun updatePlayersCards(players: List<PlayerModel>) {
+        val demonPlayer = players[0]
+        val dragonPlayer = players[1]
+        val lizardPlayer = players[2]
+        val robotPlayer = players[3]
+
+        (childFragmentManager.findFragmentById(R.id.demonCard) as? MonsterCardFragment)?.apply {
+            setMonsterData(demonPlayer) // Mettre à jour les données du monstre "Demon"
+        }
+
+        (childFragmentManager.findFragmentById(R.id.dragonCard) as? MonsterCardFragment)?.apply {
+            setMonsterData(dragonPlayer) // Mettre à jour les données du monstre "Dragon"
+        }
+
+        (childFragmentManager.findFragmentById(R.id.lizardCard) as? MonsterCardFragment)?.apply {
+            setMonsterData(lizardPlayer) // Mettre à jour les données du monstre "Lizard"
+        }
+
+        (childFragmentManager.findFragmentById(R.id.robotCard) as? MonsterCardFragment)?.apply {
+            setMonsterData(robotPlayer) // Mettre à jour les données du monstre "Robot"
         }
     }
 

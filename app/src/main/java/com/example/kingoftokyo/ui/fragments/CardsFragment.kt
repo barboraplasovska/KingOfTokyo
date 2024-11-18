@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentContainerView
@@ -69,17 +70,18 @@ class CardsFragment : DialogFragment() {
         cancelButton.setOnClickListener {
             dismiss()
         }
+
         validateButton.setOnClickListener {
-            if (selectedCard != null) {
-                mainViewModel.resetCards()
-                dismiss()
-            } else {
-                val toastLayout = layoutInflater.inflate(R.layout.custom_toast_layout, null)
-                val toast = Toast(requireContext())
-                toast.duration = Toast.LENGTH_SHORT
-                toast.view = toastLayout
-                toast.setGravity(Gravity.TOP, 0, (Resources.getSystem().displayMetrics.heightPixels / 4))
-                toast.show()
+            selectedCard?.let {
+                mainViewModel.selectedCard.value = it
+                if (mainViewModel.applyCardEffect(it)) {
+                    mainViewModel.resetCards()
+                    dismiss()
+                } else {
+                    displayToast("Not enough energy!")
+                }
+            } ?: run {
+                displayToast("Select a card!")
             }
         }
 
@@ -91,11 +93,11 @@ class CardsFragment : DialogFragment() {
 
     private fun setupCardClickListeners() {
         card1Container.setOnClickListener {
-            selectCard(1)
+            selectCard(0)
         }
 
         card2Container.setOnClickListener {
-            selectCard(2)
+            selectCard(1)
         }
     }
 
@@ -105,13 +107,24 @@ class CardsFragment : DialogFragment() {
     }
 
     private fun updateCardSelection() {
-        if (selectedCard == 1) {
+        if (selectedCard == 0) {
             card1Container.setBackgroundResource(R.drawable.card_selected_background)
             card2Container.setBackgroundResource(0)
-        } else if (selectedCard == 2) {
+        } else if (selectedCard == 1) {
             card2Container.setBackgroundResource(R.drawable.card_selected_background)
             card1Container.setBackgroundResource(0)
         }
+    }
+
+    private fun displayToast(text: String) {
+        val toastLayout = layoutInflater.inflate(R.layout.custom_toast_layout, null)
+        val toastText = toastLayout.findViewById<TextView>(R.id.toast_message)
+        toastText.text = text
+        val toast = Toast(requireContext())
+        toast.duration = Toast.LENGTH_SHORT
+        toast.view = toastLayout
+        toast.setGravity(Gravity.TOP, 0, (Resources.getSystem().displayMetrics.heightPixels / 5))
+        toast.show()
     }
 
     companion object {

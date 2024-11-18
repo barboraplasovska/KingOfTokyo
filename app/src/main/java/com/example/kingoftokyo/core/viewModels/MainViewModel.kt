@@ -3,6 +3,9 @@ package com.example.kingoftokyo.core.viewModels
 import CardModel
 import DiceModel
 import PlayerModel
+import android.app.GameState
+import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kingoftokyo.core.enums.PlayerType
@@ -23,12 +26,7 @@ class MainViewModel : ViewModel() {
         }
     val cards: MutableLiveData<List<CardModel>> = MutableLiveData()
     private var _cards = mutableListOf<CardModel>()
-    val currentCard: MutableLiveData<CardModel> = MutableLiveData()
-    var currentCardIndex: Int = 0
-        set(value) {
-            field = value
-            currentCard.postValue(_cards.getOrNull(value))
-        }
+    val selectedCard: MutableLiveData<Int?> = MutableLiveData(null)
     var isCardFirstTime: Boolean = true
 
     private val gameService: GameService
@@ -79,7 +77,7 @@ class MainViewModel : ViewModel() {
                 PlayerModel(
                     monsterName = "Robot",
                     lifePoints = 10,
-                    energyPoints = 0,
+                    energyPoints = 10,
                     victoryPoints = 0,
                     isInTokyo = false,
                     cards = emptyList(),
@@ -116,17 +114,12 @@ class MainViewModel : ViewModel() {
         return _players.any { it.victoryPoints >= 20 } || _players.count { it.lifePoints > 0 } <= 1
     }
 
-    fun getCurrentCard(): CardModel {
-        return _cards[currentCardIndex]
-    }
-
     fun startCards() {
         if (isCardFirstTime) {
             val temporaryCards = cardService.getCards().shuffled().take(2)
             _cards.clear()
             _cards.addAll(temporaryCards)
             cards.postValue(_cards)
-            currentCard.postValue(_cards[currentCardIndex])
             isCardFirstTime = false
         }
     }
@@ -136,11 +129,16 @@ class MainViewModel : ViewModel() {
         _cards.clear()
         _cards.addAll(newCards)
         cards.postValue(_cards)
-        currentCardIndex = 0
-        currentCard.postValue(_cards[currentCardIndex])
     }
 
-    fun applyCardEffect() {
-        // TODO
+    fun applyCardEffect(selectedCard: Int): Boolean {
+        val card = _cards.getOrNull(selectedCard)
+        val currentPlayer = _players[currentPlayerIndex]
+        val players = _players
+        Log.i("players", players[3].energyPoints.toString())
+        card?.let {
+            return cardService.applyCardEffect(currentPlayer, players, card)
+        }
+        return false
     }
 }

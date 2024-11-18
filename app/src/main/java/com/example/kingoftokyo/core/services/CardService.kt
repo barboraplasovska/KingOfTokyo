@@ -2,6 +2,8 @@ package com.example.kingoftokyo.core.services
 
 import CardModel
 import PlayerModel
+import android.util.Log
+import androidx.lifecycle.MutableLiveData
 
 class CardService {
    private val cards: List<CardModel> = listOf(
@@ -89,11 +91,13 @@ class CardService {
       )
    )
 
-   fun applyCardEffect(currentPlayer: PlayerModel, playerList: List<PlayerModel>, card: CardModel) {
+   fun applyCardEffect(currentPlayer: PlayerModel, playerList: List<PlayerModel>, card: CardModel): Boolean {
       if (currentPlayer.energyPoints >= card.price) {
          currentPlayer.energyPoints -= card.price
          card.effect(currentPlayer, playerList, 0)
+         return true
       }
+      return false
    }
 
    fun getCards(): List<CardModel> {
