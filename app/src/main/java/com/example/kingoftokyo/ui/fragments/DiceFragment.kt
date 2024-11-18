@@ -18,7 +18,7 @@ import com.example.kingoftokyo.ui.components.DiceView
 
 class DiceFragment : Fragment() {
 
-    private lateinit var diceModels: List<DiceModel>
+    lateinit var diceModels: List<DiceModel>
     private lateinit var rollButton: Button
     private lateinit var validateButton: Button
     private lateinit var buttonContainer: LinearLayout

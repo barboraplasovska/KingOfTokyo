@@ -91,7 +91,7 @@ class GameFragment : Fragment() {
             viewLifecycleOwner.lifecycleScope.launch {
                 if (currentPlayer?.playerType == PlayerType.BOT) {
                     diceFragment.setBotTurn()
-                    mainViewModel.botTurn()
+                    mainViewModel.botTurn(diceFragment.diceModels)
                     delay(4000)
                     mainViewModel.nextPlayer()
                 } else {
@@ -102,6 +102,7 @@ class GameFragment : Fragment() {
 
 
         finishTurnButton.setOnClickListener {
+            mainViewModel.playerTurn(diceFragment.diceModels)
             botTurn()
             mainViewModel.nextPlayer()
         }

@@ -84,10 +84,17 @@ class MainViewModel : ViewModel() {
         currentPlayer.postValue(_players[currentPlayerIndex])
     }
 
-    fun botTurn() {
+    fun botTurn(diceList: List<DiceModel>) {
         val currentPlayer = _players[currentPlayerIndex]
         if (currentPlayer.playerType == PlayerType.BOT) {
-            botService.takeTurn(currentPlayer, _players, diceList)
+            botService.takeTurn(currentPlayer, _players, diceList.toMutableList())
+        }
+    }
+
+    fun playerTurn(diceList: List<DiceModel>) {
+        val currentPlayer = _players[currentPlayerIndex]
+        if (currentPlayer.playerType == PlayerType.HUMAN) {
+            gameService.applyDiceEffects(currentPlayer, _players, diceList)
         }
     }
 
