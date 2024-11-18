@@ -26,10 +26,9 @@ class CardsFragment : DialogFragment() {
     private val mainViewModel: MainViewModel by activityViewModels()
     private lateinit var card1Container: FrameLayout
     private lateinit var card2Container: FrameLayout
-    private lateinit var cards: List<FragmentContainerView>
     private lateinit var validateButton: Button
     private lateinit var cancelButton: Button
-    private var selectedCard: Int = 0
+    private var selectedCard: Int? = null
 
     private var cardFragment1: CardFragment? = null
     private var cardFragment2: CardFragment? = null
@@ -51,8 +50,8 @@ class CardsFragment : DialogFragment() {
         validateButton = view.findViewById(R.id.cardsFragmentValidateButton)
         cancelButton = view.findViewById(R.id.cardsFragmentCancelButton)
 
-        selectedCard = 0
-        mainViewModel.startCards(selectedCard)
+        mainViewModel.startCards()
+        setupCardClickListeners()
 
         // Initialize fragments
         cardFragment1 = CardFragment()
@@ -64,8 +63,12 @@ class CardsFragment : DialogFragment() {
             .commit()
 
         // Set click listeners
-        cancelButton.setOnClickListener { dismiss() }
-        validateButton.setOnClickListener { dismiss() }
+        cancelButton.setOnClickListener {
+            dismiss()
+        }
+        validateButton.setOnClickListener {
+            dismiss()
+        }
 
         // Observe ViewModel to update card data
         mainViewModel.cards.observe(viewLifecycleOwner) { cards ->
@@ -76,6 +79,31 @@ class CardsFragment : DialogFragment() {
 
     private fun setBackgroundCard(card: FragmentContainerView, drawable: Int) {
         card.setBackgroundResource(drawable)
+    }
+
+    private fun setupCardClickListeners() {
+        card1Container.setOnClickListener {
+            selectCard(1)
+        }
+
+        card2Container.setOnClickListener {
+            selectCard(2)
+        }
+    }
+
+    private fun selectCard(cardNumber: Int) {
+        selectedCard = cardNumber
+        updateCardSelection()
+    }
+
+    private fun updateCardSelection() {
+        if (selectedCard == 1) {
+            card1Container.setBackgroundResource(R.drawable.card_selected_background)
+            card2Container.setBackgroundResource(R.drawable.card_unselected_background)
+        } else if (selectedCard == 2) {
+            card2Container.setBackgroundResource(R.drawable.card_selected_background)
+            card1Container.setBackgroundResource(R.drawable.card_unselected_background)
+        }
     }
 
     companion object {

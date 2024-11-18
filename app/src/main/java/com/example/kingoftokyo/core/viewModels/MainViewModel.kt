@@ -29,15 +29,16 @@ class MainViewModel : ViewModel() {
             field = value
             currentCard.postValue(_cards.getOrNull(value))
         }
+    var isCardFirstTime: Boolean = true
 
     private val gameService: GameService
     private val botService: BotService
     private val cardService: CardService
 
      init {
-        gameService = GameService()
-        botService = BotService(gameService)
-        cardService = CardService()
+        gameService = GameService();
+        botService = BotService(gameService);
+        cardService = CardService();
     }
 
     fun getCurrentPlayer(): PlayerModel {
@@ -119,17 +120,27 @@ class MainViewModel : ViewModel() {
         return _cards[currentCardIndex]
     }
 
-    fun startCards(selectedCard: Int) {
-        var temporaryCards = cardService.getCards().shuffled().take(2);
+    fun startCards() {
+        if (isCardFirstTime) {
+            val temporaryCards = cardService.getCards().shuffled().take(2)
+            _cards.clear()
+            _cards.addAll(temporaryCards)
+            cards.postValue(_cards)
+            currentCard.postValue(_cards[currentCardIndex])
+            isCardFirstTime = false
+        }
+    }
+
+    fun resetCards() {
+        val newCards = cardService.getCards().shuffled().take(2)
         _cards.clear()
-        _cards.addAll(
-            listOf(
-                temporaryCards[0],
-                temporaryCards[1]
-            )
-        )
+        _cards.addAll(newCards)
         cards.postValue(_cards)
-        currentCardIndex = selectedCard
+        currentCardIndex = 0
         currentCard.postValue(_cards[currentCardIndex])
+    }
+
+    fun applyCardEffect() {
+        // TODO
     }
 }
