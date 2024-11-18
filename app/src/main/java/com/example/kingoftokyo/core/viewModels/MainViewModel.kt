@@ -22,6 +22,13 @@ class MainViewModel : ViewModel() {
             currentPlayer.postValue(_players.getOrNull(value))
         }
     val cards: MutableLiveData<List<CardModel>> = MutableLiveData()
+    private var _cards = mutableListOf<CardModel>()
+    val currentCard: MutableLiveData<CardModel> = MutableLiveData()
+    var currentCardIndex: Int = 0
+        set(value) {
+            field = value
+            currentCard.postValue(_cards.getOrNull(value))
+        }
 
     private val gameService: GameService
     private val botService: BotService
@@ -70,7 +77,7 @@ class MainViewModel : ViewModel() {
                 ),
                 PlayerModel(
                     monsterName = "Robot",
-                    lifePoints = 0,
+                    lifePoints = 10,
                     energyPoints = 0,
                     victoryPoints = 0,
                     isInTokyo = false,
@@ -108,5 +115,21 @@ class MainViewModel : ViewModel() {
         return _players.any { it.victoryPoints >= 20 } || _players.count { it.lifePoints > 0 } <= 1
     }
 
+    fun getCurrentCard(): CardModel {
+        return _cards[currentCardIndex]
+    }
 
+    fun startCards(selectedCard: Int) {
+        var temporaryCards = cardService.getCards().shuffled().take(2);
+        _cards.clear()
+        _cards.addAll(
+            listOf(
+                temporaryCards[0],
+                temporaryCards[1]
+            )
+        )
+        cards.postValue(_cards)
+        currentCardIndex = selectedCard
+        currentCard.postValue(_cards[currentCardIndex])
+    }
 }

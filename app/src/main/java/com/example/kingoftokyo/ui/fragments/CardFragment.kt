@@ -23,23 +23,26 @@ class CardFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.card_card, container, false)
+        Log.d("CardFragment", "onViewCreated called")
+        return inflater.inflate(R.layout.card_view_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("CardFragment", "onViewCreated called")
 
         cardImage = view.findViewById(R.id.cardImage)
         cardPrice = view.findViewById(R.id.cardPrice)
         cardName = view.findViewById(R.id.cardName)
         cardDescription = view.findViewById(R.id.cardDescription)
         cardEffect = view.findViewById(R.id.cardEffect)
+
+        
     }
 
     fun setCardData(card: CardModel) {
         cardImage.setImageResource(
             R.drawable.dragon
+            // TODO : according to name of card
         )
         cardPrice.text = card.name.toString()
         cardName.text = card.name

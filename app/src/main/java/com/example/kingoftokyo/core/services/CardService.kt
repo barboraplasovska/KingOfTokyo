@@ -4,7 +4,7 @@ import CardModel
 import PlayerModel
 
 class CardService {
-   val cards: List<CardModel> = listOf(
+   private val cards: List<CardModel> = listOf(
       CardModel(
          name = "Alien Metabolism",
          price = 3,
@@ -106,5 +106,9 @@ class CardService {
          currentPlayer.energyPoints -= card.price
          card.effect(currentPlayer, playerList, 0)
       }
+   }
+
+   fun getCards(): List<CardModel> {
+      return cards;
    }
 }
