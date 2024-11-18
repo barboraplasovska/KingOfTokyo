@@ -22,12 +22,6 @@ class CardService {
          }
       ),
       CardModel(
-         name = "Evacuation Orders",
-         price = 3,
-         description = "Deal 1 damage to all players in Tokyo.",
-         effect = { _, playerList, _ -> playerList.filter { it.isInTokyo }.forEach { it.takeDamage(1) } }
-      ),
-      CardModel(
          name = "Healing Ray",
          price = 4,
          description = "Recover 2 life points.",
@@ -40,7 +34,7 @@ class CardService {
          effect = { player, _, _ -> player.gainEnergy(2) }
       ),
       CardModel(
-         name = "Poison Quills",
+         name = "Poison Lava",
          price = 3,
          description = "Deal 1 damage to all opponents.",
          effect = { _, playerList, _ -> playerList.forEach { it.takeDamage(1) } }
@@ -52,7 +46,7 @@ class CardService {
          effect = { player, _, _ -> if (player.isInTokyo) player.gainEnergy(3) }
       ),
       CardModel(
-         name = "Regeneration",
+         name = "Regeneration Thunder",
          price = 4,
          description = "Recover 1 life point for each energy point you have.",
          effect = { player, _, _ -> player.heal(player.energyPoints) }
@@ -64,13 +58,7 @@ class CardService {
          effect = { player, _, _ -> player.isInTokyo = false; player.heal(1) }
       ),
       CardModel(
-         name = "Power Surge",
-         price = 5,
-         description = "Gain 2 energy points, but take 1 damage.",
-         effect = { player, _, _ -> player.gainEnergy(7); player.takeDamage(1) }
-      ),
-      CardModel(
-         name = "Meteor Shower",
+         name = "Meteor",
          price = 7,
          description = "Deal 4 damage to each player in Tokyo.",
          effect = { _, playerList, _ -> playerList.filter { it.isInTokyo }.forEach { it.takeDamage(4) } }

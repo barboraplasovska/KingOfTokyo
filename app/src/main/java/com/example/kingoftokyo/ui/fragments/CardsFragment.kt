@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
@@ -23,12 +24,15 @@ import kotlinx.coroutines.launch
 class CardsFragment : DialogFragment() {
 
     private val mainViewModel: MainViewModel by activityViewModels()
-    private lateinit var card1: FragmentContainerView
-    private lateinit var card2: FragmentContainerView
+    private lateinit var card1Container: FrameLayout
+    private lateinit var card2Container: FrameLayout
     private lateinit var cards: List<FragmentContainerView>
     private lateinit var validateButton: Button
     private lateinit var cancelButton: Button
     private var selectedCard: Int = 0
+
+    private var cardFragment1: CardFragment? = null
+    private var cardFragment2: CardFragment? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,34 +45,32 @@ class CardsFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize
-        selectedCard = 0
-        mainViewModel.startCards(selectedCard)
-
-        card1 = view.findViewById(R.id.cardsFragmentCard1)
-        card2 = view.findViewById(R.id.cardsFragmentCard2)
-        cards = listOf(card1, card2)
-
+        // Initialize views
+        card1Container = view.findViewById(R.id.cardsFragmentCard1)
+        card2Container = view.findViewById(R.id.cardsFragmentCard2)
         validateButton = view.findViewById(R.id.cardsFragmentValidateButton)
         cancelButton = view.findViewById(R.id.cardsFragmentCancelButton)
 
-        setBackgroundCard(cards[selectedCard], R.drawable.monster_card_selected_background)
+        selectedCard = 0
+        mainViewModel.startCards(selectedCard)
 
-        cancelButton.setOnClickListener {
-            dismiss()
-        }
+        // Initialize fragments
+        cardFragment1 = CardFragment()
+        cardFragment2 = CardFragment()
 
-        validateButton.setOnClickListener {
-            // TODO : validate button, cards
-            dismiss()
-        }
+        childFragmentManager.beginTransaction()
+            .replace(R.id.cardsFragmentCard1, cardFragment1!!)
+            .replace(R.id.cardsFragmentCard2, cardFragment2!!)
+            .commit()
 
+        // Set click listeners
+        cancelButton.setOnClickListener { dismiss() }
+        validateButton.setOnClickListener { dismiss() }
+
+        // Observe ViewModel to update card data
         mainViewModel.cards.observe(viewLifecycleOwner) { cards ->
-            val card1 = cards[0]
-            val card2 = cards[1]
-
-            (childFragmentManager.findFragmentById(R.id.cardsFragmentCard1) as? CardFragment)?.setCardData(card1)
-            (childFragmentManager.findFragmentById(R.id.cardsFragmentCard2) as? CardFragment)?.setCardData(card2)
+            cardFragment1?.setCardData(cards[0])
+            cardFragment2?.setCardData(cards[1])
         }
     }
 

@@ -17,7 +17,6 @@ class CardFragment : Fragment() {
     private lateinit var cardPrice: TextView
     private lateinit var cardName: TextView
     private lateinit var cardDescription: TextView
-    private lateinit var cardEffect: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,19 +33,27 @@ class CardFragment : Fragment() {
         cardPrice = view.findViewById(R.id.cardPrice)
         cardName = view.findViewById(R.id.cardName)
         cardDescription = view.findViewById(R.id.cardDescription)
-        cardEffect = view.findViewById(R.id.cardEffect)
-
-        
     }
 
     fun setCardData(card: CardModel) {
-        cardImage.setImageResource(
-            R.drawable.dragon
-            // TODO : according to name of card
-        )
-        cardPrice.text = card.name.toString()
+        cardPrice.text = card.price.toString()
         cardName.text = card.name
         cardDescription.text = card.description
-        cardEffect.text = card.effect.toString()
+        cardImage.setImageResource(when (card.name) {
+            "Alien Metabolism" -> R.drawable.card_alien_metabolism
+            "Complete Destruction" -> R.drawable.card_complete_destruction
+            "Healing Ray" -> R.drawable.card_healing_ray
+            "Solar Powered" -> R.drawable.card_solar_powered
+            "Poison Lava" -> R.drawable.card_poison_lava
+            "Energy Hoarder" -> R.drawable.card_energy_hoarder
+            "Regeneration Thunder" -> R.drawable.card_regeneration_thunder
+            "Tactical Retreat" -> R.drawable.card_tactical_retreat
+            "Meteor" -> R.drawable.card_meteor
+            "Fortress" -> R.drawable.card_fortress
+            "Wild Growth" -> R.drawable.card_wild_growth
+            "Victory Parade" -> R.drawable.card_victory_parade
+            "Tsunami" -> R.drawable.card_tsunami
+            else -> R.drawable.tokyo
+        })
     }
 }
