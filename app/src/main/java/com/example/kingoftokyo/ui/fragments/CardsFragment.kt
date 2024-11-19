@@ -1,14 +1,11 @@
 package com.example.kingoftokyo.ui.fragments
 
-import CardModel
-import android.app.Dialog
 import android.content.DialogInterface
 import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,15 +14,9 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import com.example.kingoftokyo.R
-import com.example.kingoftokyo.core.enums.PlayerType
-import com.example.kingoftokyo.core.services.CardService
 import com.example.kingoftokyo.core.viewModels.MainViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class CardsFragment : DialogFragment() {
 
@@ -59,7 +50,6 @@ class CardsFragment : DialogFragment() {
         cancelButton = view.findViewById(R.id.cardsFragmentCancelButton)
 
         mainViewModel.startCards()
-        setupCardClickListeners()
 
         // Initialize fragments
         cardFragment1 = CardFragment()
@@ -70,24 +60,9 @@ class CardsFragment : DialogFragment() {
             .replace(R.id.cardsFragmentCard2, cardFragment2!!)
             .commit()
 
-        // Set click listeners
-        cancelButton.setOnClickListener {
-            dismiss()
-        }
-
-        validateButton.setOnClickListener {
-            selectedCard?.let {
-                mainViewModel.selectedCard.value = it
-                if (mainViewModel.applyCardEffect(it)) {
-                    mainViewModel.resetCards()
-                    dismiss()
-                } else {
-                    displayToast("Not enough energy!", true)
-                }
-            } ?: run {
-                displayToast("Select a card!", true)
-            }
-        }
+        clickCancelButton()
+        clickValidateButton()
+        setupCardClickListeners()
 
         mainViewModel.cards.observe(viewLifecycleOwner) { cards ->
             cardFragment1?.setCardData(cards[0])
@@ -130,6 +105,34 @@ class CardsFragment : DialogFragment() {
         toast.view = toastLayout
         toast.setGravity(Gravity.TOP, 0, (Resources.getSystem().displayMetrics.heightPixels / 5))
         toast.show()
+    }
+
+    private fun clickCancelButton() {
+        cancelButton.setOnClickListener {
+            dismiss()
+        }
+    }
+
+    private fun clickValidateButton() {
+        validateButton.setOnClickListener {
+            validateCard()
+        }
+    }
+
+    private fun validateCard() {
+        selectedCard?.let {
+            mainViewModel.selectedCard.value = it
+
+            if (mainViewModel.applyCardEffect(it)) {
+                displayToast("You used your energy!", false)
+                mainViewModel.resetCards()
+                dismiss()
+            } else {
+                displayToast("Not enough energy!", true)
+            }
+        } ?: run {
+            displayToast("Select a card!", true)
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {

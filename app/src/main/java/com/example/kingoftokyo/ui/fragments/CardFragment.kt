@@ -18,6 +18,10 @@ class CardFragment : Fragment() {
     private lateinit var cardName: TextView
     private lateinit var cardDescription: TextView
 
+    // =======================
+    // On Create View
+    // =======================
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

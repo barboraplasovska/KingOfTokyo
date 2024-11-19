@@ -2,33 +2,27 @@ package com.example.kingoftokyo.ui.fragments
 
 import PlayerModel
 import android.app.Dialog
-import android.content.res.ColorStateList
+import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.kingoftokyo.R
 import com.example.kingoftokyo.core.viewModels.MainViewModel
-import com.example.kingoftokyo.core.services.GameService
-import com.example.kingoftokyo.core.services.BotService
 import com.example.kingoftokyo.core.enums.PlayerType
-import com.example.kingoftokyo.ui.fragments.MonsterCardFragment
-import kotlinx.coroutines.Delay
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -51,11 +45,12 @@ class GameFragment : Fragment() {
 
     private lateinit var monsterCards: List<FragmentContainerView>
     private lateinit var diceFragment: DiceFragment
+
     private lateinit var finishTurnButton: Button
     private lateinit var leaveTokyoButton: Button
     private lateinit var stayInTokyoButton: Button
-
     private lateinit var openCardsButton: ImageButton
+
     private var selectedMonster: Int = 0
 
     // =======================
@@ -172,8 +167,6 @@ class GameFragment : Fragment() {
             stayInTokyoButton.visibility = View.GONE
 
             viewLifecycleOwner.lifecycleScope.launch {
-                // FIXME: cards shit
-                mainViewModel.botBuyCards()
                 updateAllPlayers()
                 delay(2000)
 
@@ -194,9 +187,6 @@ class GameFragment : Fragment() {
 
                 updateAllPlayers()
                 delay(1000)
-
-                // FIXME: cards shit
-                mainViewModel.botBuyCards()
                 updateAllPlayers()
                 delay(2000)
 
@@ -269,6 +259,7 @@ class GameFragment : Fragment() {
             botRerollDice()
             botApplyDiceEffects()
             handleBotHit()
+            botBuyCard()
         }
     }
 
@@ -302,6 +293,14 @@ class GameFragment : Fragment() {
         }
     }
 
+    private fun botBuyCard() {
+        val affordedCard = mainViewModel.botBuyCards()
+        if (affordedCard != null) {
+            val textToDisplayInToast = affordedCard.name + " used !"
+            displayToast(textToDisplayInToast, false)
+        }
+    }
+
     private fun handleHumanPlayerWasHit() {
         leaveTokyoButton.visibility = View.VISIBLE
         leaveTokyoButton.isEnabled = true
@@ -316,7 +315,6 @@ class GameFragment : Fragment() {
 
         updateAllPlayers()
         delay(1000)
-        mainViewModel.botBuyCards()
         updateAllPlayers()
         delay(2000)
 
@@ -443,5 +441,17 @@ class GameFragment : Fragment() {
 
     private fun setBackgroundMonster(card: FragmentContainerView, drawable: Int) {
         card.setBackgroundResource(drawable)
+    }
+
+    private fun displayToast(text: String = "Undefined", isRed: Boolean = false) {
+        val toastLayout = layoutInflater.inflate(R.layout.custom_toast_layout, null)
+        val toastText = toastLayout.findViewById<TextView>(R.id.toast_message)
+        toastText.text = text
+        toastText.setTextColor(if (isRed) Color.RED else Color.BLACK)
+        val toast = Toast(requireContext())
+        toast.duration = Toast.LENGTH_SHORT
+        toast.view = toastLayout
+        toast.setGravity(Gravity.TOP, 0, (Resources.getSystem().displayMetrics.heightPixels / 5))
+        toast.show()
     }
 }

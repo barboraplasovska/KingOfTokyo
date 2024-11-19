@@ -1,12 +1,13 @@
 package com.example.kingoftokyo.core.services;
 
+import CardModel
 import DiceModel
 import PlayerModel
 import com.example.kingoftokyo.core.enums.DiceFace
 import com.example.kingoftokyo.core.models.DiceCount
 import kotlin.random.Random
 
-class BotService(private val gameService: GameService) {
+class BotService(private val gameService: GameService, private val cardService: CardService) {
 
     fun rollDice(diceList: List<DiceModel>) {
         // Step 1: Roll the dice
@@ -112,9 +113,24 @@ class BotService(private val gameService: GameService) {
         }
     }
 
-    fun buyCard() {
+    fun buyCards(botPlayer: PlayerModel, allPlayers: List<PlayerModel>, availableCards: List<CardModel>): Boolean {
         // Step 5: Card-buying logic
-        // FIXME: lilian
+
+        val affordableCards = availableCards.filter { it.price <= botPlayer.energyPoints }
+        if (affordableCards.isEmpty()) {
+            return false
+        }
+
+        return cardService.applyCardEffect(botPlayer, allPlayers, affordableCards.first())
+    }
+
+    fun bestAffordableCard(botPlayer: PlayerModel, availableCards: List<CardModel>): CardModel? {
+        val affordableCards = availableCards.filter { it.price <= botPlayer.energyPoints }
+        if (affordableCards.isEmpty()) {
+            return null
+        }
+
+        return affordableCards.first()
     }
 
     private fun shouldLeaveTokyo(botPlayer: PlayerModel): Boolean {
