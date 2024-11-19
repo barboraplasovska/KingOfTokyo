@@ -54,8 +54,8 @@ class MainViewModel : ViewModel() {
             listOf(
                 PlayerModel(monsterName = "Demon", lifePoints = 10, energyPoints = 50, victoryPoints = 0, isInTokyo = false, cards = emptyList(), playerType = if (selectedMonster == 0) PlayerType.HUMAN else PlayerType.BOT),
                 PlayerModel(monsterName = "Dragon", lifePoints = 10, energyPoints = 0, victoryPoints = 0, isInTokyo = false, cards = emptyList(), playerType = if (selectedMonster == 1) PlayerType.HUMAN else PlayerType.BOT),
+                PlayerModel(monsterName = "Lizard", lifePoints = 10, energyPoints = 0, victoryPoints = 0, isInTokyo = false, cards = emptyList(), playerType = if (selectedMonster == 2) PlayerType.HUMAN else PlayerType.BOT),
                 PlayerModel(monsterName = "Robot", lifePoints = 10, energyPoints = 0, victoryPoints = 0, isInTokyo = false, cards = emptyList(), playerType = if (selectedMonster == 3) PlayerType.HUMAN else PlayerType.BOT),
-                PlayerModel(monsterName = "Lizard", lifePoints = 10, energyPoints = 0, victoryPoints = 0, isInTokyo = false, cards = emptyList(), playerType = if (selectedMonster == 2) PlayerType.HUMAN else PlayerType.BOT)
             )
         )
         currentPlayerIndex = selectedMonster
@@ -222,6 +222,7 @@ class MainViewModel : ViewModel() {
         val newPlayer = _players[currentPlayerIndex].deepCopy()
         _currentPlayer.postValue(newPlayer)
     }
+
     fun resetCards() {
         val newCards = cardService.getCards().shuffled().take(2)
         _cards.clear()

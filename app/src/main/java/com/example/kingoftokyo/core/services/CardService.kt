@@ -32,13 +32,13 @@ class CardService {
       CardModel(
          name = "Solar Powered",
          price = 3,
-         description = "Gain 4 energy points.",
-         effect = { player, _, _ -> player.gainEnergy(3) }
+         description = "Gain 5 energy points.",
+         effect = { player, _, _ -> player.gainEnergy(5) }
       ),
       CardModel(
          name = "Poison Lava",
          price = 3,
-         description = "Deal 1 damage to all opponents.",
+         description = "Deal 1 damage to everyone.",
          effect = { _, playerList, _ -> playerList.forEach { it.takeDamage(1) } }
       ),
       CardModel(
@@ -49,7 +49,7 @@ class CardService {
       ),
       CardModel(
          name = "Regeneration Thunder",
-         price = 4,
+         price = 5,
          description = "Recover 1 life point for each energy point you have.",
          effect = { player, _, _ -> player.heal(player.energyPoints) }
       ),
@@ -62,8 +62,8 @@ class CardService {
       CardModel(
          name = "Meteor",
          price = 7,
-         description = "Deal 4 damage to each player in Tokyo.",
-         effect = { _, playerList, _ -> playerList.filter { it.isInTokyo }.forEach { it.takeDamage(4) } }
+         description = "Deal 5 damage to each player in Tokyo.",
+         effect = { _, playerList, _ -> playerList.filter { it.isInTokyo }.forEach { it.takeDamage(5) } }
       ),
       CardModel(
          name = "Fortress",
@@ -79,9 +79,9 @@ class CardService {
       ),
       CardModel(
          name = "Victory Parade",
-         price = 5,
-         description = "Gain 1 victory points for every 3 energy points you have.",
-         effect = { player, _, _ -> player.gainVictoryPoints((player.energyPoints / 3) * 1) }
+         price = 6,
+         description = "Gain 1 victory points for every 2 energy points you have.",
+         effect = { player, _, _ -> player.gainVictoryPoints((player.energyPoints / 2) * 1) }
       ),
       CardModel(
          name = "Tsunami",
@@ -93,8 +93,8 @@ class CardService {
 
    fun applyCardEffect(currentPlayer: PlayerModel, playerList: List<PlayerModel>, card: CardModel): Boolean {
       if (currentPlayer.energyPoints >= card.price) {
-         currentPlayer.energyPoints -= card.price
          card.effect(currentPlayer, playerList, 0)
+         currentPlayer.energyPoints -= card.price
          return true
       }
       return false

@@ -118,7 +118,7 @@ class GameFragment : Fragment() {
         lizardFragment = view.findViewById(R.id.lizardCard)
         robotFragment = view.findViewById(R.id.robotCard)
 
-        monsterCards = listOf(demonFragment, dragonFragment, robotFragment, lizardFragment)
+        monsterCards = listOf(demonFragment, dragonFragment, lizardFragment, robotFragment)
         setBackgroundMonster(monsterCards[selectedMonster], R.drawable.monster_card_selected_background)
     }
 
@@ -413,16 +413,28 @@ class GameFragment : Fragment() {
         }
     }
 
-    private fun updatePlayerBackground(currentPlayer: PlayerModel) {
-        for (monster in monsterCards) {
-            setBackgroundMonster(monster, R.drawable.monster_card_background)
+    private fun updatePlayerBackground(currentPlayer: PlayerModel?) {
+        if (currentPlayer == null)
+            return
+        if (currentPlayer.playerType == PlayerType.HUMAN) {
+            setBackgroundMonster(monsterCards[selectedMonster], R.drawable.monster_player_selected)
+            for (i in monsterCards.indices) {
+                if (i == selectedMonster) {
+                    continue
+                }
+                setBackgroundMonster(monsterCards[i], R.drawable.monster_card_background)
+            }
         }
-
-        if (currentPlayer.isHuman()) {
-            setBackgroundMonster(getMonsterFragment(currentPlayer.monsterName), R.drawable.monster_player_selected)
-        } else {
-            setBackgroundMonster(getMonsterFragment(currentPlayer.monsterName), R.drawable.monster_current_player_background)
+        else {
             setBackgroundMonster(monsterCards[selectedMonster], R.drawable.monster_card_selected_background)
+            for (i in monsterCards.indices) {
+                if (i == selectedMonster) {
+                    continue
+                }
+                setBackgroundMonster(monsterCards[i], R.drawable.monster_card_background)
+            }
+            val monsterFragment = getMonsterFragment(currentPlayer.monsterName)
+            setBackgroundMonster(monsterFragment, R.drawable.monster_current_player_background)
         }
     }
 
