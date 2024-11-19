@@ -18,13 +18,14 @@ import com.example.kingoftokyo.ui.components.DiceView
 
 class DiceFragment : Fragment() {
 
-    private lateinit var diceModels: List<DiceModel>
+    lateinit var diceModels: List<DiceModel>
     private lateinit var rollButton: Button
     private lateinit var validateButton: Button
     private lateinit var buttonContainer: LinearLayout
 
     private var hasRolled = 0
     private var isBotTurn = false
+    var onValidateDiceClick: (() -> Unit)? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,6 +51,7 @@ class DiceFragment : Fragment() {
                 rollAllDice()
                 rollButton.text = "Reroll"
                 validateButton.visibility = View.VISIBLE
+                validateButton.isEnabled = true
                 hasRolled++
             }
             else if (hasRolled <= 3){
@@ -65,7 +67,7 @@ class DiceFragment : Fragment() {
         }
 
         validateButton.setOnClickListener {
-            validateDice()
+            onValidateDiceClick?.invoke()
         }
     }
 
@@ -115,32 +117,48 @@ class DiceFragment : Fragment() {
         }
     }
 
-    public fun setBotTurn() {
+    fun setBotTurn() {
         buttonContainer.visibility = View.GONE
         isBotTurn = true
     }
 
-    public fun setPlayerTurn() {
+    fun setPlayerTurn() {
         buttonContainer.visibility = View.VISIBLE
         isBotTurn = false
+
+        resetDice()
     }
 
     fun resetDice() {
-        // Reset each dice model with a random face and unlocked state
-        diceModels = List(6) { DiceModel(DiceFace.values().random(), false) }
         hasRolled = 0
         rollButton.isEnabled = true
         rollButton.alpha = 1.0f
         rollButton.text = "Roll"
         validateButton.visibility = View.GONE
 
-        // Update each dice view to reflect the reset state
+        diceModels.forEachIndexed { index, diceModel ->
+            diceModel.isLocked = false
+            updateDiceView(index)
+        }
+    }
+
+    fun updateDice(diceList: List<DiceModel>) {
+        diceModels = diceList
         diceModels.forEachIndexed { index, diceModel ->
             updateDiceView(index)
         }
     }
 
-    private fun validateDice() {
-        // FIXME: Logic for validating dice
+    fun disableDiceAndButtons() {
+        rollButton.isEnabled = false
+        rollButton.alpha = 0.8f
+
+        validateButton.isEnabled = false
+        validateButton.alpha = 0.8f
+
+        diceModels.forEachIndexed { index, diceModel ->
+            diceModel.isLocked = true
+            updateDiceView(index)
+        }
     }
 }

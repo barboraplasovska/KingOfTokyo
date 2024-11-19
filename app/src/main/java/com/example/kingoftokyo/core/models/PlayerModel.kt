@@ -9,6 +9,26 @@ class PlayerModel(
     var cards: List<CardModel>,
     val playerType: PlayerType,
 ) {
+    fun deepCopy(): PlayerModel {
+        return PlayerModel(
+            monsterName = this.monsterName,
+            lifePoints = this.lifePoints,
+            energyPoints = this.energyPoints,
+            victoryPoints = this.victoryPoints,
+            isInTokyo = this.isInTokyo,
+            playerType = this.playerType,
+            cards = this.cards.map { it.deepCopy() },
+        )
+    }
+
+    fun isDead() : Boolean {
+        return lifePoints <= 0
+    }
+
+    fun isHuman() : Boolean {
+        return playerType == PlayerType.HUMAN
+    }
+
     fun displayStats() {
         println("Monster Name: $monsterName")
         println("Life Points: $lifePoints")
@@ -20,7 +40,10 @@ class PlayerModel(
 
     fun takeDamage(damage: Int) {
         lifePoints -= damage
-        if (lifePoints < 0) lifePoints = 0
+        if (lifePoints < 0) {
+            lifePoints = 0
+            isInTokyo = false // can't be in Tokyo if dead
+        }
     }
 
     fun heal(healing: Int) {

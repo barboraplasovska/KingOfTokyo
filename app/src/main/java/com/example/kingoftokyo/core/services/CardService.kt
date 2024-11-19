@@ -31,9 +31,9 @@ class CardService {
       ),
       CardModel(
          name = "Solar Powered",
-         price = 4,
-         description = "Gain 2 energy points.",
-         effect = { player, _, _ -> player.gainEnergy(2) }
+         price = 3,
+         description = "Gain 4 energy points.",
+         effect = { player, _, _ -> player.gainEnergy(3) }
       ),
       CardModel(
          name = "Poison Lava",
@@ -80,8 +80,8 @@ class CardService {
       CardModel(
          name = "Victory Parade",
          price = 5,
-         description = "Gain 2 victory points for every 3 energy points you have.",
-         effect = { player, _, _ -> player.gainVictoryPoints((player.energyPoints / 3) * 2) }
+         description = "Gain 1 victory points for every 3 energy points you have.",
+         effect = { player, _, _ -> player.gainVictoryPoints((player.energyPoints / 3) * 1) }
       ),
       CardModel(
          name = "Tsunami",

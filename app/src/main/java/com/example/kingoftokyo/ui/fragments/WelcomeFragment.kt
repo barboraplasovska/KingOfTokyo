@@ -21,12 +21,10 @@ class WelcomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("WelcomeFragment", "onViewCreated called")
 
         val startButton: Button = view.findViewById(R.id.startButton)
 
         startButton.setOnClickListener {
-            Log.d("WelcomeFragment", "Start Button Clicked")
             findNavController().navigate(R.id.action_welcomeFragment_to_pickMonsterFragment)
         }
     }

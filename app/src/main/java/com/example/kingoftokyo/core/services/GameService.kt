@@ -3,6 +3,7 @@ package com.example.kingoftokyo.core.services
 import CardModel
 import DiceModel
 import PlayerModel
+import android.util.Log
 import com.example.kingoftokyo.core.enums.DiceFace
 
 class GameService {
@@ -28,6 +29,13 @@ class GameService {
             }
         }
         applyVictoryEffects(currentPlayer, victoryDices)
+    }
+
+    fun applyTokyoEffects(currentPlayer: PlayerModel) {
+        if (currentPlayer.isInTokyo) {
+            Log.d("GameService", "Applying Tokyo effects to player ${currentPlayer.monsterName}")
+            currentPlayer.victoryPoints += 2
+        }
     }
 
    private fun applyClawEffect(currentPlayer: PlayerModel, playerList: List<PlayerModel>, points: Int = 1) {
@@ -61,6 +69,7 @@ class GameService {
                 totalPoints += nbDices
             }
         }
+        Log.d("GameService", "Player ${currentPlayer.monsterName} gained $totalPoints points")
         currentPlayer.gainVictoryPoints(totalPoints)
     }
 }
