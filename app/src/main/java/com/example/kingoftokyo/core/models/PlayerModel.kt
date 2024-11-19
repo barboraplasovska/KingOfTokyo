@@ -21,6 +21,10 @@ class PlayerModel(
         )
     }
 
+    fun isDead() : Boolean {
+        return lifePoints <= 0
+    }
+
     fun displayStats() {
         println("Monster Name: $monsterName")
         println("Life Points: $lifePoints")
@@ -32,7 +36,10 @@ class PlayerModel(
 
     fun takeDamage(damage: Int) {
         lifePoints -= damage
-        if (lifePoints < 0) lifePoints = 0
+        if (lifePoints < 0) {
+            lifePoints = 0
+            isInTokyo = false // can't be in Tokyo if dead
+        }
     }
 
     fun heal(healing: Int) {

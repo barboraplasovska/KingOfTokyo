@@ -78,20 +78,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_margin="16dp" />
 
-        <Button
-            android:id="@+id/tokyoActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Enter Tokyo"
-            android:backgroundTint="#EEBF81"
-            android:textColor="#000000"
-            app:layout_constraintTop_toBottomOf="@+id/robotCard"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_margin="16dp"
-            android:visibility="gone"
-            />
-
         <!-- Dice Fragment with proper vertical constraints -->
         <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/diceFragmentContainer"
@@ -102,18 +88,56 @@
                 android:layout_marginTop="32dp"
                 app:layout_constraintTop_toBottomOf="@+id/lizardCard" />
 
-        <!-- Finish your turn button -->
-        <Button
-                android:id="@+id/finishTurnButton"
+        <LinearLayout
+            android:id="@+id/buttonRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_marginHorizontal="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/diceFragmentContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center_vertical">
+
+            <Button
+                android:id="@+id/leaveTokyoButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Finish your turn"
+                android:layout_height="45dp"
+                android:text="Leave Tokyo"
                 android:backgroundTint="#EEBF81"
                 android:textColor="#000000"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginBottom="25dp" />
+                android:layout_marginEnd="8dp"
+                android:visibility="gone" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/finishTurnButton"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:text="Finish Your Turn"
+                android:backgroundTint="#B0EE81"
+                android:textColor="#000000"
+                android:layout_marginStart="8dp"
+                android:visibility="gone"
+                />
+
+            <Button
+                android:id="@+id/stayTokyoButton"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:text="Stay in tokyo"
+                android:backgroundTint="#B0EE81"
+                android:textColor="#000000"
+                android:layout_marginStart="8dp"
+                android:visibility="gone"
+                />
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

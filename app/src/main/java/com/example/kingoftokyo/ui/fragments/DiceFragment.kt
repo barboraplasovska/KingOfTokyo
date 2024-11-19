@@ -124,18 +124,25 @@ class DiceFragment : Fragment() {
     fun setPlayerTurn() {
         buttonContainer.visibility = View.VISIBLE
         isBotTurn = false
+
+        resetDice()
     }
 
     fun resetDice() {
-        // Reset each dice model with a random face and unlocked state
-        diceModels = List(6) { DiceModel(DiceFace.values().random(), false) }
         hasRolled = 0
         rollButton.isEnabled = true
         rollButton.alpha = 1.0f
         rollButton.text = "Roll"
         validateButton.visibility = View.GONE
 
-        // Update each dice view to reflect the reset state
+        diceModels.forEachIndexed { index, diceModel ->
+            diceModel.isLocked = false
+            updateDiceView(index)
+        }
+    }
+
+    fun updateDice(diceList: List<DiceModel>) {
+        diceModels = diceList
         diceModels.forEachIndexed { index, diceModel ->
             updateDiceView(index)
         }

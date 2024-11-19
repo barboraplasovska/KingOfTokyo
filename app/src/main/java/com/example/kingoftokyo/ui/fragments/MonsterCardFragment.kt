@@ -23,7 +23,11 @@ class MonsterCardFragment : Fragment() {
     private lateinit var heartValue: TextView
     private lateinit var lightningValue: TextView
     private lateinit var trophyValue: TextView
+
     private lateinit var heartImageView: ImageView
+    private lateinit var lightningImageView: ImageView
+    private lateinit var trophyImageView: ImageView
+
     private lateinit var deadOverlay: View
     private lateinit var deadIcon: ImageView
     private lateinit var tokyoTower: ImageView
@@ -37,14 +41,18 @@ class MonsterCardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("MonsterCardFragment", "onViewCreated called")
 
         monsterImage = view.findViewById(R.id.monsterImage)
         monsterName = view.findViewById(R.id.monsterName)
+
         heartValue = view.findViewById(R.id.heartValue)
         lightningValue = view.findViewById(R.id.lightningValue)
         trophyValue = view.findViewById(R.id.trophyValue)
+
         heartImageView = view.findViewById(R.id.heartIcon)
+        lightningImageView = view.findViewById(R.id.lightningIcon)
+        trophyImageView = view.findViewById(R.id.trophyIcon)
+
         deadOverlay = view.findViewById(R.id.deadOverlay)
         deadIcon = view.findViewById(R.id.deadIcon)
         tokyoTower = view.findViewById(R.id.towerIcon)
@@ -66,7 +74,20 @@ class MonsterCardFragment : Fragment() {
     }
 
     fun isDead() {
-        deadOverlay.visibility = View.VISIBLE
+        notInTokyo()
+
+        monsterImage.alpha = 0.5f
+        monsterName.alpha = 0.5f
+
+        heartValue.alpha = 0.5f
+        lightningValue.alpha = 0.5f
+        trophyValue.alpha = 0.5f
+
+        heartImageView.alpha = 0.5f
+        lightningImageView.alpha = 0.5f
+        trophyImageView.alpha = 0.5f
+
+     //   deadOverlay.visibility = View.VISIBLE
         deadIcon.visibility = View.VISIBLE
         heartImageView.setImageResource(R.drawable.broken_heart)
     }
