@@ -114,6 +114,7 @@ class BotService(private val gameService: GameService) {
 
     fun buyCard() {
         // Step 5: Card-buying logic
+        // FIXME: lilian
     }
 
     private fun shouldLeaveTokyo(botPlayer: PlayerModel): Boolean {

@@ -2,7 +2,9 @@ package com.example.kingoftokyo.ui.fragments
 
 import CardModel
 import android.app.Dialog
+import android.content.DialogInterface
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -36,6 +38,8 @@ class CardsFragment : DialogFragment() {
 
     private var cardFragment1: CardFragment? = null
     private var cardFragment2: CardFragment? = null
+
+    var onDismissCallback: (() -> Unit)? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -78,10 +82,10 @@ class CardsFragment : DialogFragment() {
                     mainViewModel.resetCards()
                     dismiss()
                 } else {
-                    displayToast("Not enough energy!")
+                    displayToast("Not enough energy!", true)
                 }
             } ?: run {
-                displayToast("Select a card!")
+                displayToast("Select a card!", true)
             }
         }
 
@@ -116,15 +120,21 @@ class CardsFragment : DialogFragment() {
         }
     }
 
-    private fun displayToast(text: String) {
+    private fun displayToast(text: String = "Undefined", isRed: Boolean = false) {
         val toastLayout = layoutInflater.inflate(R.layout.custom_toast_layout, null)
         val toastText = toastLayout.findViewById<TextView>(R.id.toast_message)
         toastText.text = text
+        toastText.setTextColor(if (isRed) Color.RED else Color.BLACK)
         val toast = Toast(requireContext())
         toast.duration = Toast.LENGTH_SHORT
         toast.view = toastLayout
         toast.setGravity(Gravity.TOP, 0, (Resources.getSystem().displayMetrics.heightPixels / 5))
         toast.show()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onDismissCallback?.invoke()
     }
 
     companion object {

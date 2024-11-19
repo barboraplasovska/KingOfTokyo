@@ -384,6 +384,9 @@ class GameFragment : Fragment() {
     // Card modal
     private fun showCardsModal() {
         val dialogFragment = CardsFragment.newInstance()
+        dialogFragment.onDismissCallback = {
+           updateAllPlayers()
+        }
         dialogFragment.show(childFragmentManager, "CardsFragment")
     }
 
