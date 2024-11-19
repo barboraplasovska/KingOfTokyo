@@ -28,7 +28,6 @@ class MonsterCardFragment : Fragment() {
     private lateinit var lightningImageView: ImageView
     private lateinit var trophyImageView: ImageView
 
-    private lateinit var deadOverlay: View
     private lateinit var deadIcon: ImageView
     private lateinit var tokyoTower: ImageView
 
@@ -53,7 +52,6 @@ class MonsterCardFragment : Fragment() {
         lightningImageView = view.findViewById(R.id.lightningIcon)
         trophyImageView = view.findViewById(R.id.trophyIcon)
 
-        deadOverlay = view.findViewById(R.id.deadOverlay)
         deadIcon = view.findViewById(R.id.deadIcon)
         tokyoTower = view.findViewById(R.id.towerIcon)
     }
@@ -87,7 +85,6 @@ class MonsterCardFragment : Fragment() {
         lightningImageView.alpha = 0.5f
         trophyImageView.alpha = 0.5f
 
-     //   deadOverlay.visibility = View.VISIBLE
         deadIcon.visibility = View.VISIBLE
         heartImageView.setImageResource(R.drawable.broken_heart)
     }
