@@ -51,6 +51,7 @@ class DiceFragment : Fragment() {
                 rollAllDice()
                 rollButton.text = "Reroll"
                 validateButton.visibility = View.VISIBLE
+                validateButton.isEnabled = true
                 hasRolled++
             }
             else if (hasRolled <= 3){
@@ -144,6 +145,19 @@ class DiceFragment : Fragment() {
     fun updateDice(diceList: List<DiceModel>) {
         diceModels = diceList
         diceModels.forEachIndexed { index, diceModel ->
+            updateDiceView(index)
+        }
+    }
+
+    fun disableDiceAndButtons() {
+        rollButton.isEnabled = false
+        rollButton.alpha = 0.8f
+
+        validateButton.isEnabled = false
+        validateButton.alpha = 0.8f
+
+        diceModels.forEachIndexed { index, diceModel ->
+            diceModel.isLocked = true
             updateDiceView(index)
         }
     }

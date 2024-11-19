@@ -149,6 +149,8 @@ class GameFragment : Fragment() {
             updateAllPlayers()
 
             finishTurnButton.visibility = View.VISIBLE
+
+            diceFragment.disableDiceAndButtons()
         }
     }
 
