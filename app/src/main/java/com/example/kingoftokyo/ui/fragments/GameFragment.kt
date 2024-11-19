@@ -32,13 +32,21 @@ import kotlinx.coroutines.launch
 class GameFragment : Fragment() {
 
     private val mainViewModel: MainViewModel by activityViewModels()
+
+    private lateinit var demonCardFragment: MonsterCardFragment
+    private lateinit var dragonCardFragment: MonsterCardFragment
+    private lateinit var robotCardFragment: MonsterCardFragment
+    private lateinit var lizardCardFragment: MonsterCardFragment
+
     private lateinit var demon: FragmentContainerView
     private lateinit var dragon: FragmentContainerView
     private lateinit var lizard: FragmentContainerView
     private lateinit var robot: FragmentContainerView
+
     private lateinit var monsterCards: List<FragmentContainerView>
     private lateinit var diceFragment: DiceFragment
     private lateinit var finishTurnButton: Button
+    private lateinit var tokyoActionButton: Button
     private var selectedMonster: Int = 0
 
     override fun onCreateView(
@@ -53,58 +61,112 @@ class GameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize game with selected monster index
         selectedMonster = arguments?.getInt("selectedMonster") ?: 0
         mainViewModel.startGame(selectedMonster)
+
+        demonCardFragment = childFragmentManager.findFragmentById(R.id.demonCard) as? MonsterCardFragment ?: return
+        dragonCardFragment = childFragmentManager.findFragmentById(R.id.dragonCard) as? MonsterCardFragment ?: return
+        robotCardFragment = childFragmentManager.findFragmentById(R.id.robotCard) as? MonsterCardFragment ?: return
+        lizardCardFragment = childFragmentManager.findFragmentById(R.id.lizardCard) as? MonsterCardFragment ?: return
+
+        finishTurnButton = view.findViewById(R.id.finishTurnButton)
+        tokyoActionButton = view.findViewById(R.id.tokyoActionButton)
 
         diceFragment = DiceFragment()
         childFragmentManager.beginTransaction()
             .replace(R.id.diceFragmentContainer, diceFragment)
             .commitNow()
 
-        demon = view.findViewById(R.id.demonCard)
-        dragon = view.findViewById(R.id.dragonCard)
-        lizard = view.findViewById(R.id.lizardCard)
-        robot = view.findViewById(R.id.robotCard)
-        monsterCards = listOf(demon, dragon, lizard, robot)
-        finishTurnButton = view.findViewById(R.id.finishTurnButton)
-
-        setBackgroundMonster(monsterCards[selectedMonster], R.drawable.monster_card_selected_background)
-
-        mainViewModel.players.observe(viewLifecycleOwner) { players ->
-            val demonPlayer = players[0]
-            val dragonPlayer = players[1]
-            val lizardPlayer = players[2]
-            val robotPlayer = players[3]
-
-            (childFragmentManager.findFragmentById(R.id.demonCard) as? MonsterCardFragment)?.setMonsterData(demonPlayer)
-            (childFragmentManager.findFragmentById(R.id.dragonCard) as? MonsterCardFragment)?.setMonsterData(dragonPlayer)
-            (childFragmentManager.findFragmentById(R.id.robotCard) as? MonsterCardFragment)?.setMonsterData(robotPlayer)
-            (childFragmentManager.findFragmentById(R.id.lizardCard) as? MonsterCardFragment)?.setMonsterData(lizardPlayer)
-
-        }
-
-        mainViewModel.currentPlayer.observe(viewLifecycleOwner) { currentPlayer ->
-            updateBg(currentPlayer)
-            if (currentPlayer.playerType == PlayerType.BOT)
-                diceFragment.resetDice()
-            viewLifecycleOwner.lifecycleScope.launch {
-                if (currentPlayer?.playerType == PlayerType.BOT) {
-                    diceFragment.setBotTurn()
-                    mainViewModel.botTurn(diceFragment.diceModels)
-                    delay(4000)
-                    mainViewModel.nextPlayer()
-                } else {
-                    diceFragment.setPlayerTurn()
-                }
+        diceFragment.onValidateDiceClick = {
+            mainViewModel.playerTurn(diceFragment.diceModels)
+            if (mainViewModel.currentPlayer.value != null) {
+                updatePlayerCard(mainViewModel.currentPlayer.value!!)
             }
         }
 
 
+        demon = view.findViewById(R.id.demonCard)
+        dragon = view.findViewById(R.id.dragonCard)
+        lizard = view.findViewById(R.id.lizardCard)
+        robot = view.findViewById(R.id.robotCard)
+
+        monsterCards = listOf(demon, dragon, lizard, robot)
+
+        setBackgroundMonster(monsterCards[selectedMonster], R.drawable.monster_card_selected_background)
+
+        mainViewModel.currentPlayer.observe(viewLifecycleOwner) { currentPlayer ->
+            updateBg(currentPlayer)
+
+            if (currentPlayer.playerType == PlayerType.BOT) {
+                diceFragment.resetDice()
+                finishTurnButton.visibility = View.GONE
+                viewLifecycleOwner.lifecycleScope.launch {
+                    diceFragment.setBotTurn()
+                    mainViewModel.botTurn(diceFragment.diceModels)
+                    delay(4000)
+                    mainViewModel.nextPlayer()
+                }
+            } else {
+                finishTurnButton.visibility = View.VISIBLE
+                diceFragment.setPlayerTurn()
+            }
+
+            updatePlayerCard(currentPlayer)
+        }
+
         finishTurnButton.setOnClickListener {
-            mainViewModel.playerTurn(diceFragment.diceModels)
-            botTurn()
+            if (mainViewModel.currentPlayer.value != null) {
+                updatePlayerCard(mainViewModel.currentPlayer.value!!)
+            }
             mainViewModel.nextPlayer()
+        }
+
+        tokyoActionButton.setOnClickListener {
+            val currentPlayer = mainViewModel.currentPlayer.value ?: return@setOnClickListener
+            if (currentPlayer.isInTokyo) {
+                mainViewModel.leaveTokyo()
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        val players = mainViewModel.getPlayers()
+        val demonPlayer = players[0]
+        val dragonPlayer = players[1]
+        val lizardPlayer = players[2]
+        val robotPlayer = players[3]
+
+        demonCardFragment.setMonsterData(demonPlayer)
+        dragonCardFragment.setMonsterData(dragonPlayer)
+        robotCardFragment.setMonsterData(robotPlayer)
+        lizardCardFragment.setMonsterData(lizardPlayer)
+    }
+
+    private fun updatePlayerCard(player: PlayerModel) {
+        var card: MonsterCardFragment? = null
+        when (player.monsterName) {
+            "Demon" -> card = demonCardFragment
+            "Dragon" -> card = dragonCardFragment
+            "Lizard" -> card = lizardCardFragment
+            "Robot" -> card = robotCardFragment
+        }
+
+        card?.setMonsterData(player)
+
+        if (player.isInTokyo) {
+            if (player.playerType == PlayerType.HUMAN) {
+                tokyoActionButton.text = "Leave Tokyo"
+                tokyoActionButton.visibility = View.VISIBLE
+            } else {
+                tokyoActionButton.visibility = View.GONE
+            }
+
+            card?.inTokyo()
+        } else {
+            tokyoActionButton.visibility = View.GONE
+            card?.notInTokyo()
         }
     }
 

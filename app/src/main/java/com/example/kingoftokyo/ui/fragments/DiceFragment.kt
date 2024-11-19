@@ -25,6 +25,7 @@ class DiceFragment : Fragment() {
 
     private var hasRolled = 0
     private var isBotTurn = false
+    var onValidateDiceClick: (() -> Unit)? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,7 +66,7 @@ class DiceFragment : Fragment() {
         }
 
         validateButton.setOnClickListener {
-            validateDice()
+            onValidateDiceClick?.invoke()
         }
     }
 
@@ -115,12 +116,12 @@ class DiceFragment : Fragment() {
         }
     }
 
-    public fun setBotTurn() {
+    fun setBotTurn() {
         buttonContainer.visibility = View.GONE
         isBotTurn = true
     }
 
-    public fun setPlayerTurn() {
+    fun setPlayerTurn() {
         buttonContainer.visibility = View.VISIBLE
         isBotTurn = false
     }
@@ -138,9 +139,5 @@ class DiceFragment : Fragment() {
         diceModels.forEachIndexed { index, diceModel ->
             updateDiceView(index)
         }
-    }
-
-    private fun validateDice() {
-        // FIXME: Logic for validating dice
     }
 }

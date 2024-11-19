@@ -78,6 +78,20 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_margin="16dp" />
 
+        <Button
+            android:id="@+id/tokyoActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter Tokyo"
+            android:backgroundTint="#EEBF81"
+            android:textColor="#000000"
+            app:layout_constraintTop_toBottomOf="@+id/robotCard"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="16dp"
+            android:visibility="gone"
+            />
+
         <!-- Dice Fragment with proper vertical constraints -->
         <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/diceFragmentContainer"

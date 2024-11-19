@@ -9,6 +9,18 @@ class PlayerModel(
     var cards: List<CardModel>,
     val playerType: PlayerType,
 ) {
+    fun deepCopy(): PlayerModel {
+        return PlayerModel(
+            monsterName = this.monsterName,
+            lifePoints = this.lifePoints,
+            energyPoints = this.energyPoints,
+            victoryPoints = this.victoryPoints,
+            isInTokyo = this.isInTokyo,
+            playerType = this.playerType,
+            cards = this.cards.map { it.deepCopy() },
+        )
+    }
+
     fun displayStats() {
         println("Monster Name: $monsterName")
         println("Life Points: $lifePoints")

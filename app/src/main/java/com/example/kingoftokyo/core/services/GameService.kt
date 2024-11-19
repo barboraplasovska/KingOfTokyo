@@ -30,6 +30,10 @@ class GameService {
         applyVictoryEffects(currentPlayer, victoryDices)
     }
 
+    fun applyTokyoEffects(currentPlayer: PlayerModel) {
+        currentPlayer.victoryPoints += 2
+    }
+
    private fun applyClawEffect(currentPlayer: PlayerModel, playerList: List<PlayerModel>, points: Int = 1) {
        val isInTokyo = currentPlayer.isInTokyo
        for (player in playerList) {
