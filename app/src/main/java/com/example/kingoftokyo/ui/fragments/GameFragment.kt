@@ -226,71 +226,89 @@ class GameFragment : Fragment() {
             diceFragment.resetDice()
 
             if (currentPlayer.isInTokyo) {
-                mainViewModel.applyTokyoEffects()
-                updatePlayerCard(currentPlayer)
+                handleTokyoEntry(currentPlayer)
             }
 
             if (currentPlayer.playerType == PlayerType.BOT) {
-                finishTurnButton.visibility = View.GONE
-                viewLifecycleOwner.lifecycleScope.launch {
-                    diceFragment.setBotTurn()
-                    // step 1: bot rolls dice
-                    mainViewModel.botRollDice(diceFragment.diceModels)
-                    diceFragment.updateDice(diceFragment.diceModels)
-                    updateAllPlayers()
-                    delay(1000)
-
-                    // step 2: bot rerolls dice
-                    for (i in 0..2) {
-                        val shouldReroll = Random.nextBoolean()
-
-                        if (shouldReroll) {
-                            mainViewModel.botRerollDice(diceFragment.diceModels)
-                            diceFragment.updateDice(diceFragment.diceModels)
-                            updateAllPlayers()
-                            delay(1000)
-                        }
-                    }
-
-                    // step 3: bot applies dice effects
-                    mainViewModel.botApplyDiceEffects(diceFragment.diceModels)
-                    updateAllPlayers()
-
-                    // Was player hit ?
-                    if (mainViewModel.wasHumanPlayerHit(diceFragment.diceModels)) {
-                        // Yes, we wait if player wants to leave tokyo
-                        leaveTokyoButton.visibility = View.VISIBLE
-                        leaveTokyoButton.isEnabled = true
-                        stayInTokyoButton.visibility = View.VISIBLE
-                    } else {
-                        if (mainViewModel.wasBotPlayerHit(diceFragment.diceModels)) {
-                            // Bot was hit, decide to leave
-                            mainViewModel.botPlayerHit()
-
-                            // current can enter
-                            mainViewModel.botEnterTokyo()
-                        }
-
-                        // not waiting
-                        updateAllPlayers()
-                        delay(1000)
-
-                        // FIXME: cards shit
-                        mainViewModel.botBuyCards()
-
-                        updateAllPlayers()
-                        delay(2000)
-
-                        mainViewModel.nextPlayer()
-
-                    }
-                }
+                handleBotTurn()
             } else {
                 diceFragment.setPlayerTurn()
             }
 
             updatePlayerCard(currentPlayer)
         }
+    }
+
+    // =======================
+    // Game Logic
+    // =======================
+
+    private fun handleTokyoEntry(currentPlayer: PlayerModel) {
+        mainViewModel.applyTokyoEffects()
+        updatePlayerCard(currentPlayer)
+    }
+
+    private fun handleBotTurn() {
+        finishTurnButton.visibility = View.GONE
+        viewLifecycleOwner.lifecycleScope.launch {
+            diceFragment.setBotTurn()
+            botRollDice()
+            delay(1000)
+            botRerollDice()
+            botApplyDiceEffects()
+            handleBotHit()
+        }
+    }
+
+    private fun botRollDice() {
+        mainViewModel.botRollDice(diceFragment.diceModels)
+        diceFragment.updateDice(diceFragment.diceModels)
+        updateAllPlayers()
+    }
+
+    private suspend fun botRerollDice() {
+        for (i in 0..2) {
+            if (Random.nextBoolean()) {
+                mainViewModel.botRerollDice(diceFragment.diceModels)
+                diceFragment.updateDice(diceFragment.diceModels)
+                updateAllPlayers()
+                delay(1000)
+            }
+        }
+    }
+
+    private fun botApplyDiceEffects() {
+        mainViewModel.botApplyDiceEffects(diceFragment.diceModels)
+        updateAllPlayers()
+    }
+
+    private suspend fun handleBotHit() {
+        if (mainViewModel.wasHumanPlayerHit(diceFragment.diceModels)) {
+            handleHumanPlayerWasHit()
+        } else {
+            handleBotPlayerWasHit()
+        }
+    }
+
+    private fun handleHumanPlayerWasHit() {
+        leaveTokyoButton.visibility = View.VISIBLE
+        leaveTokyoButton.isEnabled = true
+        stayInTokyoButton.visibility = View.VISIBLE
+    }
+
+    private suspend fun handleBotPlayerWasHit() {
+        if (mainViewModel.wasBotPlayerHit(diceFragment.diceModels)) {
+            mainViewModel.botPlayerHit()
+            mainViewModel.botEnterTokyo()
+        }
+
+        updateAllPlayers()
+        delay(1000)
+        mainViewModel.botBuyCards()
+        updateAllPlayers()
+        delay(2000)
+
+        mainViewModel.nextPlayer()
     }
 
     // =======================
