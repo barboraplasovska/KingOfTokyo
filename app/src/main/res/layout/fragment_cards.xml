@@ -18,13 +18,18 @@
             android:id="@+id/cardsFragmentCard1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="5dp"
+            android:padding="1dp"
             android:background="@drawable/card_unselected_background"/>
 
         <FrameLayout
             android:id="@+id/cardsFragmentCard2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="5dp"
+            android:padding="1dp"
             android:background="@drawable/card_unselected_background"/>
     </LinearLayout>
 
