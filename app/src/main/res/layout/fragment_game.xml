@@ -23,7 +23,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                    android:id="@+id/monsterPickerTitle"
+                    android:id="@+id/gameFragmentTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Round n°1"

@@ -35,7 +35,7 @@ class MainViewModel : ViewModel() {
     private var _firstPlayer = 0
 
     // =======================
-    // Initialization & Setup Function
+    // Initialization & Setup Functions
     // =======================
 
     fun startGame(selectedMonster: Int) {

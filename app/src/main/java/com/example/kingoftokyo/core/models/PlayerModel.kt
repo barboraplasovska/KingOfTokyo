@@ -25,6 +25,10 @@ class PlayerModel(
         return lifePoints <= 0
     }
 
+    fun isHuman() : Boolean {
+        return playerType == PlayerType.HUMAN
+    }
+
     fun displayStats() {
         println("Monster Name: $monsterName")
         println("Life Points: $lifePoints")

@@ -36,17 +36,17 @@ class GameFragment : Fragment() {
 
     private val mainViewModel: MainViewModel by activityViewModels()
 
-    private lateinit var monsterPickerTitle: TextView
+    private lateinit var gameFragmentTitle: TextView
 
-    private lateinit var demonCardFragment: MonsterCardFragment
-    private lateinit var dragonCardFragment: MonsterCardFragment
-    private lateinit var robotCardFragment: MonsterCardFragment
-    private lateinit var lizardCardFragment: MonsterCardFragment
+    private lateinit var  demonCard: MonsterCardFragment
+    private lateinit var  dragonCard: MonsterCardFragment
+    private lateinit var  robotCard: MonsterCardFragment
+    private lateinit var  lizardCard: MonsterCardFragment
 
-    private lateinit var demon: FragmentContainerView
-    private lateinit var dragon: FragmentContainerView
-    private lateinit var lizard: FragmentContainerView
-    private lateinit var robot: FragmentContainerView
+    private lateinit var  demonFragment: FragmentContainerView
+    private lateinit var dragonFragment: FragmentContainerView
+    private lateinit var lizardFragment: FragmentContainerView
+    private lateinit var robotFragment: FragmentContainerView
 
     private lateinit var monsterCards: List<FragmentContainerView>
     private lateinit var diceFragment: DiceFragment
@@ -56,6 +56,10 @@ class GameFragment : Fragment() {
     
     private var selectedMonster: Int = 0
 
+    // =======================
+    // On Create View
+    // =======================
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -64,29 +68,75 @@ class GameFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_game, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         selectedMonster = arguments?.getInt("selectedMonster") ?: 0
+        gameFragmentTitle = view.findViewById(R.id.gameFragmentTitle)
+
+        // Start the game
         mainViewModel.startGame(selectedMonster)
 
-        monsterPickerTitle = view.findViewById(R.id.monsterPickerTitle)
+        // Initialize views
+        initializeCardFragments(view)
+        initializeDiceFragment()
+        initializeButtons(view)
 
-        demonCardFragment = childFragmentManager.findFragmentById(R.id.demonCard) as? MonsterCardFragment ?: return
-        dragonCardFragment = childFragmentManager.findFragmentById(R.id.dragonCard) as? MonsterCardFragment ?: return
-        robotCardFragment = childFragmentManager.findFragmentById(R.id.robotCard) as? MonsterCardFragment ?: return
-        lizardCardFragment = childFragmentManager.findFragmentById(R.id.lizardCard) as? MonsterCardFragment ?: return
+        // observe view models
+        observeRound()
+        observeIsGameOver()
+        observeCurrentPlayer()
 
-        finishTurnButton = view.findViewById(R.id.finishTurnButton)
-        leaveTokyoButton = view.findViewById(R.id.leaveTokyoButton)
-        stayInTokyoButton = view.findViewById(R.id.stayTokyoButton)
+        // Setup buttons
+        setupValidateDiceButton()
+        setupFinishTurnButton()
+        setupStayInTokyoButton()
+        setupLeaveTokyoButton()
+    }
 
+    override fun onStart() {
+        super.onStart()
+
+        updateAllPlayers()
+    }
+
+    // =======================
+    // Initialization
+    // =======================
+
+    private fun initializeCardFragments(view: View) {
+        demonCard = childFragmentManager.findFragmentById(R.id.demonCard) as? MonsterCardFragment ?: return
+        dragonCard = childFragmentManager.findFragmentById(R.id.dragonCard) as? MonsterCardFragment ?: return
+        robotCard = childFragmentManager.findFragmentById(R.id.robotCard) as? MonsterCardFragment ?: return
+        lizardCard = childFragmentManager.findFragmentById(R.id.lizardCard) as? MonsterCardFragment ?: return
+
+        demonFragment = view.findViewById(R.id.demonCard)
+        dragonFragment = view.findViewById(R.id.dragonCard)
+        lizardFragment = view.findViewById(R.id.lizardCard)
+        robotFragment = view.findViewById(R.id.robotCard)
+
+        monsterCards = listOf(demonFragment, dragonFragment, robotFragment, lizardFragment)
+        setBackgroundMonster(monsterCards[selectedMonster], R.drawable.monster_card_selected_background)
+    }
+
+    private fun initializeDiceFragment() {
         diceFragment = DiceFragment()
         childFragmentManager.beginTransaction()
             .replace(R.id.diceFragmentContainer, diceFragment)
             .commitNow()
+    }
 
+    private fun initializeButtons(view: View) {
+        finishTurnButton = view.findViewById(R.id.finishTurnButton)
+        leaveTokyoButton = view.findViewById(R.id.leaveTokyoButton)
+        stayInTokyoButton = view.findViewById(R.id.stayTokyoButton)
+    }
+
+    // =======================
+    // Setup Functions
+    // =======================
+
+    private fun setupValidateDiceButton() {
         diceFragment.onValidateDiceClick = {
             mainViewModel.playerApplyDiceEffects(diceFragment.diceModels)
 
@@ -100,32 +150,79 @@ class GameFragment : Fragment() {
 
             finishTurnButton.visibility = View.VISIBLE
         }
+    }
 
+    private fun setupFinishTurnButton() {
+        finishTurnButton.setOnClickListener {
+            updateAllPlayers()
+            mainViewModel.nextPlayer()
+        }
+    }
 
-        demon = view.findViewById(R.id.demonCard)
-        dragon = view.findViewById(R.id.dragonCard)
-        lizard = view.findViewById(R.id.lizardCard)
-        robot = view.findViewById(R.id.robotCard)
+    private fun setupStayInTokyoButton() {
+        stayInTokyoButton.setOnClickListener {
+            // (It was bots turn, I stay in tokyo, so bot continues turn)
+            leaveTokyoButton.visibility = View.GONE
+            stayInTokyoButton.visibility = View.GONE
 
-        monsterCards = listOf(demon, dragon, robot, lizard)
+            viewLifecycleOwner.lifecycleScope.launch {
+                // FIXME: cards shit
+                mainViewModel.botBuyCards()
+                updateAllPlayers()
+                delay(2000)
 
-        setBackgroundMonster(monsterCards[selectedMonster], R.drawable.monster_card_selected_background)
-
-        mainViewModel.round.observe(viewLifecycleOwner) { round ->
-            if (round != null) {
-                monsterPickerTitle.text = "Round n°${round}"
+                mainViewModel.nextPlayer()
             }
         }
+    }
 
+    private fun setupLeaveTokyoButton() {
+        leaveTokyoButton.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                mainViewModel.humanLeaveTokyo()
+
+                mainViewModel.botEnterTokyo()
+
+                leaveTokyoButton.visibility = View.GONE
+                stayInTokyoButton.visibility = View.GONE
+
+                updateAllPlayers()
+                delay(1000)
+
+                // FIXME: cards shit
+                mainViewModel.botBuyCards()
+                updateAllPlayers()
+                delay(2000)
+
+                mainViewModel.nextPlayer()
+            }
+        }
+    }
+
+    // =======================
+    // Observer Functions
+    // =======================
+
+    private fun observeRound() {
+        mainViewModel.round.observe(viewLifecycleOwner) { round ->
+            round?.let {
+                gameFragmentTitle.text = "Round n°$round"
+            }
+        }
+    }
+
+    private fun observeIsGameOver() {
         mainViewModel.isGameOver.observe(viewLifecycleOwner) { isGameOver ->
             if (isGameOver) {
                 showGameOverModal(mainViewModel.getWinner())
             }
         }
+    }
 
+    private fun observeCurrentPlayer() {
         mainViewModel.currentPlayer.observe(viewLifecycleOwner) { currentPlayer ->
             Log.d("GameFragment", "Current player: ${currentPlayer.monsterName}")
-            updateBg(currentPlayer)
+            updatePlayerBackground(currentPlayer)
             diceFragment.resetDice()
 
             if (currentPlayer.isInTokyo) {
@@ -194,54 +291,72 @@ class GameFragment : Fragment() {
 
             updatePlayerCard(currentPlayer)
         }
+    }
 
-        finishTurnButton.setOnClickListener {
-            updateAllPlayers()
-            mainViewModel.nextPlayer()
-        }
+    // =======================
+    // Getters
+    // =======================
 
-        stayInTokyoButton.setOnClickListener {
-            // (It was bots turn, I stay in tokyo, so bot continues turn)
-            leaveTokyoButton.visibility = View.GONE
-            stayInTokyoButton.visibility = View.GONE
-
-            viewLifecycleOwner.lifecycleScope.launch {
-                // FIXME: cards shit
-                mainViewModel.botBuyCards()
-                updateAllPlayers()
-                delay(2000)
-
-                mainViewModel.nextPlayer()
-            }
-        }
-
-        leaveTokyoButton.setOnClickListener {
-            viewLifecycleOwner.lifecycleScope.launch {
-                mainViewModel.humanLeaveTokyo()
-
-                mainViewModel.botEnterTokyo()
-
-                leaveTokyoButton.visibility = View.GONE
-                stayInTokyoButton.visibility = View.GONE
-
-                updateAllPlayers()
-                delay(1000)
-
-                // FIXME: cards shit
-                mainViewModel.botBuyCards()
-                updateAllPlayers()
-                delay(2000)
-
-                mainViewModel.nextPlayer()
-            }
+    private fun getMonsterFragment(monsterName: String) : FragmentContainerView {
+        return when (monsterName) {
+            "Demon" -> demonFragment
+            "Dragon" -> dragonFragment
+            "Lizard" ->  lizardFragment
+            "Robot" -> robotFragment
+            else -> demonFragment // will never happen
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        updateAllPlayers()
+    private fun getMonsterCard(monsterName: String) : MonsterCardFragment {
+        return when (monsterName) {
+            "Demon" ->  demonCard
+            "Dragon" -> dragonCard
+            "Lizard" ->  lizardCard
+            "Robot" -> robotCard
+            else -> demonCard // will never happen
+        }
     }
+
+    private fun getMonsterImage(monsterName: String) : Int {
+        return when (monsterName) {
+            "Demon" -> R.drawable.demon
+            "Dragon" -> R.drawable.dragon
+            "Lizard" -> R.drawable.lizard
+            "Robot" -> R.drawable.robot
+            else -> R.drawable.demon // will never happen
+        }
+    }
+
+    // =======================
+    // Modals
+    // =======================
+
+    // Game over modal
+    private fun showGameOverModal(player: PlayerModel) {
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.game_over_modal)
+
+        val titleTextView = dialog.findViewById<TextView>(R.id.modalTitle)
+        titleTextView.text = "${player.monsterName} is the King of Tokyo"
+
+        val monsterImage: ImageView = dialog.findViewById(R.id.monsterImage)
+        monsterImage.setImageResource(getMonsterImage(player.monsterName))
+
+        val dismissButton = dialog.findViewById<Button>(R.id.dismissButton)
+        dismissButton.setOnClickListener {
+            dialog.dismiss()
+            findNavController().navigate(R.id.action_gameFragment_to_welcomeFragment)
+        }
+
+        dialog.show()
+    }
+
+    // Card modal
+    // FIXME: lilian
+
+    // =======================
+    // Private helper functions
+    // =======================
 
     private fun updateAllPlayers() {
         for (player in mainViewModel.getPlayers()) {
@@ -250,26 +365,7 @@ class GameFragment : Fragment() {
     }
 
     private fun updatePlayerCard(player: PlayerModel) {
-        var card: MonsterCardFragment = demonCardFragment
-        var fragment: FragmentContainerView = demon
-        when (player.monsterName) {
-            "Demon" -> {
-                card = demonCardFragment
-                fragment = demon
-            }
-            "Dragon" -> {
-                card = dragonCardFragment
-                fragment = dragon
-            }
-            "Lizard" -> {
-                card = lizardCardFragment
-                fragment = lizard
-            }
-            "Robot" -> {
-                card = robotCardFragment
-                fragment = robot
-            }
-        }
+        val card: MonsterCardFragment = getMonsterCard(player.monsterName)
 
         card.setMonsterData(player)
 
@@ -284,32 +380,16 @@ class GameFragment : Fragment() {
         }
     }
 
-    private fun updateBg(currentPlayer: PlayerModel?) {
-        if (currentPlayer == null)
-            return
-        if (currentPlayer.playerType == PlayerType.HUMAN) {
-            setBackgroundMonster(monsterCards[selectedMonster], R.drawable.monster_player_selected)
-            for (i in monsterCards.indices) {
-                if (i == selectedMonster) {
-                    continue
-                }
-                setBackgroundMonster(monsterCards[i], R.drawable.monster_card_background)
-            }
+    private fun updatePlayerBackground(currentPlayer: PlayerModel) {
+        for (monster in monsterCards) {
+            setBackgroundMonster(monster, R.drawable.monster_card_background)
         }
-        else {
+
+        if (currentPlayer.isHuman()) {
+            setBackgroundMonster(getMonsterFragment(currentPlayer.monsterName), R.drawable.monster_player_selected)
+        } else {
+            setBackgroundMonster(getMonsterFragment(currentPlayer.monsterName), R.drawable.monster_current_player_background)
             setBackgroundMonster(monsterCards[selectedMonster], R.drawable.monster_card_selected_background)
-            for (i in monsterCards.indices) {
-                if (i == selectedMonster) {
-                    continue
-                }
-                setBackgroundMonster(monsterCards[i], R.drawable.monster_card_background)
-            }
-            when (currentPlayer.monsterName) {
-                "Demon" -> setBackgroundMonster(demon, R.drawable.monster_current_player_background)
-                "Dragon" -> setBackgroundMonster(dragon, R.drawable.monster_current_player_background)
-                "Lizard" -> setBackgroundMonster(lizard, R.drawable.monster_current_player_background)
-                "Robot" -> setBackgroundMonster(robot, R.drawable.monster_current_player_background)
-            }
         }
     }
 
@@ -317,27 +397,4 @@ class GameFragment : Fragment() {
         card.setBackgroundResource(drawable)
     }
 
-    private fun showGameOverModal(player: PlayerModel) {
-        val dialog = Dialog(requireContext())
-        dialog.setContentView(R.layout.game_over_modal)
-
-        val titleTextView = dialog.findViewById<TextView>(R.id.modalTitle)
-        titleTextView.text = "${player.monsterName} is the King of Tokyo"
-
-        var monsterImage: ImageView = dialog.findViewById(R.id.monsterImage)
-        when (player.monsterName) {
-            "Demon" -> monsterImage.setImageResource(R.drawable.demon)
-            "Dragon" -> monsterImage.setImageResource(R.drawable.dragon)
-            "Lizard" -> monsterImage.setImageResource(R.drawable.lizard)
-            "Robot" -> monsterImage.setImageResource(R.drawable.robot)
-        }
-
-        val dismissButton = dialog.findViewById<Button>(R.id.dismissButton)
-        dismissButton.setOnClickListener {
-            dialog.dismiss()
-            findNavController().navigate(R.id.action_gameFragment_to_welcomeFragment)
-        }
-
-        dialog.show()
-    }
 }
