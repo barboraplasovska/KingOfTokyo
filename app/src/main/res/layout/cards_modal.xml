@@ -5,8 +5,21 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="8dp"
-    android:background="@drawable/rounded_background"
-    tools:context=".ui.fragments.CardsFragment">
+    android:minWidth="250dp"
+    android:background="@drawable/rounded_background">
+
+    <TextView
+        android:id="@+id/botBoughtTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Demon bought this card"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:visibility="gone"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp" />
 
     <LinearLayout
         android:layout_width="match_parent"

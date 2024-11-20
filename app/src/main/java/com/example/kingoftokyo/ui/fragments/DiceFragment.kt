@@ -104,10 +104,11 @@ class DiceFragment : Fragment() {
         updateDiceView(index)
     }
 
-    private fun updateDiceView(index: Int) {
+    private fun updateDiceView(index: Int, enable: Boolean = true) {
         val diceView = view?.findViewById<DiceView>(R.id.dice1 + index)
         diceView?.updateLockState(diceModels[index].isLocked)
         diceView?.setDiceImage(diceModels[index].face)
+        diceView?.isEnabled = enable
     }
 
     private fun rollAllDice() {
@@ -158,7 +159,7 @@ class DiceFragment : Fragment() {
 
         diceModels.forEachIndexed { index, diceModel ->
             diceModel.isLocked = true
-            updateDiceView(index)
+            updateDiceView(index, enable = false)
         }
     }
 }

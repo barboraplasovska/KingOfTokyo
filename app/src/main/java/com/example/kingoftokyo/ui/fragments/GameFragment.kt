@@ -4,6 +4,7 @@ import PlayerModel
 import android.app.Dialog
 import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -49,7 +50,7 @@ class GameFragment : Fragment() {
     private lateinit var finishTurnButton: Button
     private lateinit var leaveTokyoButton: Button
     private lateinit var stayInTokyoButton: Button
-    private lateinit var openCardsButton: ImageButton
+    private lateinit var openCardModalButton: ImageButton
 
     private var selectedMonster: Int = 0
 
@@ -89,7 +90,7 @@ class GameFragment : Fragment() {
         setupFinishTurnButton()
         setupStayInTokyoButton()
         setupLeaveTokyoButton()
-        setupCardsModalButton()
+        setupOpenCardModalButton()
     }
 
     override fun onStart() {
@@ -113,7 +114,7 @@ class GameFragment : Fragment() {
         lizardFragment = view.findViewById(R.id.lizardCard)
         robotFragment = view.findViewById(R.id.robotCard)
 
-        monsterCards = listOf(demonFragment, dragonFragment, lizardFragment, robotFragment)
+        monsterCards = listOf(demonFragment, dragonFragment, robotFragment, lizardFragment)
         setBackgroundMonster(monsterCards[selectedMonster], R.drawable.monster_card_selected_background)
     }
 
@@ -126,9 +127,9 @@ class GameFragment : Fragment() {
 
     private fun initializeButtons(view: View) {
         finishTurnButton = view.findViewById(R.id.finishTurnButton)
-        openCardsButton = view.findViewById(R.id.openCardsButton)
         leaveTokyoButton = view.findViewById(R.id.leaveTokyoButton)
         stayInTokyoButton = view.findViewById(R.id.stayTokyoButton)
+        openCardModalButton = view.findViewById(R.id.openCardModalButton)
     }
 
     // =======================
@@ -147,9 +148,11 @@ class GameFragment : Fragment() {
 
             updateAllPlayers()
 
-            finishTurnButton.visibility = View.VISIBLE
-
             diceFragment.disableDiceAndButtons()
+
+            showCardsModalForPlayer()
+
+            openCardModalButton.visibility = View.VISIBLE
         }
     }
 
@@ -157,6 +160,7 @@ class GameFragment : Fragment() {
         finishTurnButton.setOnClickListener {
             updateAllPlayers()
             mainViewModel.nextPlayer()
+            mainViewModel.resetCards() // reset cards after player playing
         }
     }
 
@@ -167,6 +171,10 @@ class GameFragment : Fragment() {
             stayInTokyoButton.visibility = View.GONE
 
             viewLifecycleOwner.lifecycleScope.launch {
+                mainViewModel.currentPlayer.value?.let {
+                    botBuyCards(mainViewModel.currentPlayer.value!!.monsterName)
+                }
+
                 updateAllPlayers()
                 delay(2000)
 
@@ -187,6 +195,11 @@ class GameFragment : Fragment() {
 
                 updateAllPlayers()
                 delay(1000)
+
+                mainViewModel.currentPlayer.value?.let {
+                    botBuyCards(mainViewModel.currentPlayer.value!!.monsterName)
+                }
+
                 updateAllPlayers()
                 delay(2000)
 
@@ -195,9 +208,9 @@ class GameFragment : Fragment() {
         }
     }
 
-    private fun setupCardsModalButton() {
-        openCardsButton.setOnClickListener {
-            showCardsModal()
+    private fun setupOpenCardModalButton() {
+        openCardModalButton.setOnClickListener {
+            showCardsModalForPlayer()
         }
     }
 
@@ -226,8 +239,6 @@ class GameFragment : Fragment() {
             Log.d("GameFragment", "Current player: ${currentPlayer.monsterName}")
             updatePlayerBackground(currentPlayer)
 
-            openCardsButton.visibility = if (currentPlayer.playerType == PlayerType.BOT) View.GONE else View.VISIBLE
-
             diceFragment.resetDice()
 
             if (currentPlayer.isInTokyo) {
@@ -235,7 +246,7 @@ class GameFragment : Fragment() {
             }
 
             if (currentPlayer.playerType == PlayerType.BOT) {
-                handleBotTurn()
+                handleBotTurn(currentPlayer.monsterName)
             } else {
                 diceFragment.setPlayerTurn()
             }
@@ -253,7 +264,8 @@ class GameFragment : Fragment() {
         updatePlayerCard(currentPlayer)
     }
 
-    private fun handleBotTurn() {
+    private fun handleBotTurn(monsterName: String) {
+        openCardModalButton.visibility = View.GONE
         finishTurnButton.visibility = View.GONE
         viewLifecycleOwner.lifecycleScope.launch {
             diceFragment.setBotTurn()
@@ -261,8 +273,12 @@ class GameFragment : Fragment() {
             delay(1000)
             botRerollDice()
             botApplyDiceEffects()
-            handleBotHit()
-            botBuyCard()
+            if (mainViewModel.wasHumanPlayerHit(diceFragment.diceModels)) {
+                handleHumanPlayerWasHit()
+            } else {
+                handleBotPlayerWasHit()
+                botBuyCards(monsterName)
+            }
         }
     }
 
@@ -288,19 +304,13 @@ class GameFragment : Fragment() {
         updateAllPlayers()
     }
 
-    private suspend fun handleBotHit() {
-        if (mainViewModel.wasHumanPlayerHit(diceFragment.diceModels)) {
-            handleHumanPlayerWasHit()
-        } else {
-            handleBotPlayerWasHit()
-        }
-    }
-
-    private fun botBuyCard() {
+    private suspend fun botBuyCards(monsterName: String) {
         val affordedCard = mainViewModel.botBuyCards()
         if (affordedCard != null) {
-            val textToDisplayInToast = affordedCard.name + " used !"
-            displayToast(textToDisplayInToast, false)
+//            val textToDisplayInToast = affordedCard.name + " used !"
+//            displayToast(textToDisplayInToast, false)
+
+            showCardsModalForBot(monsterName)
         }
     }
 
@@ -366,6 +376,7 @@ class GameFragment : Fragment() {
     private fun showGameOverModal(player: PlayerModel) {
         val dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.game_over_modal)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val titleTextView = dialog.findViewById<TextView>(R.id.modalTitle)
         titleTextView.text = "${player.monsterName} is the King of Tokyo"
@@ -383,12 +394,33 @@ class GameFragment : Fragment() {
     }
 
     // Card modal
-    private fun showCardsModal() {
-        val dialogFragment = CardsFragment.newInstance()
+    private fun showCardsModalForPlayer() {
+        val dialogFragment = CardsModalFragment.newInstance()
         dialogFragment.onDismissCallback = {
            updateAllPlayers()
+
+           finishTurnButton.visibility = View.VISIBLE // he can finish his turn now
         }
-        dialogFragment.show(childFragmentManager, "CardsFragment")
+
+        dialogFragment.onValidateCallback = {
+            openCardModalButton.visibility = View.GONE
+        }
+
+        dialogFragment.show(childFragmentManager, "PlayerCardModal")
+    }
+
+    private suspend fun showCardsModalForBot(monsterName: String) {
+        val dialogFragment = CardsModalFragment.newInstance(isForBot = true, botName = monsterName)
+
+        dialogFragment.onDismissCallback = {
+            updateAllPlayers()
+            mainViewModel.resetCards()
+        }
+
+
+        dialogFragment.show(childFragmentManager, "BotCardModal")
+        delay(3000)
+        dialogFragment.forceDismiss()
     }
 
     // =======================

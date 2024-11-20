@@ -37,10 +37,11 @@ class MainViewModel : ViewModel() {
     private val _players = mutableListOf<PlayerModel>()
     private var currentPlayerIndex: Int = 0
     private var _haveAppliedTokyoEffects = false
+    private var _hasBoughtCard = false
     private var _firstPlayer = 0
 
     val selectedCard: MutableLiveData<Int?> = MutableLiveData(null)
-    var isCardFirstTime: Boolean = true
+    private var _isCardFirstTime: Boolean = true
 
     // =======================
     // Initialization & Setup Functions
@@ -52,8 +53,8 @@ class MainViewModel : ViewModel() {
             listOf(
                 PlayerModel(monsterName = "Demon", lifePoints = 10, energyPoints = 0, victoryPoints = 0, isInTokyo = false, cards = emptyList(), playerType = if (selectedMonster == 0) PlayerType.HUMAN else PlayerType.BOT),
                 PlayerModel(monsterName = "Dragon", lifePoints = 10, energyPoints = 0, victoryPoints = 0, isInTokyo = false, cards = emptyList(), playerType = if (selectedMonster == 1) PlayerType.HUMAN else PlayerType.BOT),
-                PlayerModel(monsterName = "Lizard", lifePoints = 10, energyPoints = 0, victoryPoints = 0, isInTokyo = false, cards = emptyList(), playerType = if (selectedMonster == 2) PlayerType.HUMAN else PlayerType.BOT),
-                PlayerModel(monsterName = "Robot", lifePoints = 10, energyPoints = 0, victoryPoints = 0, isInTokyo = false, cards = emptyList(), playerType = if (selectedMonster == 3) PlayerType.HUMAN else PlayerType.BOT),
+                PlayerModel(monsterName = "Robot", lifePoints = 10, energyPoints = 0, victoryPoints = 0, isInTokyo = false, cards = emptyList(), playerType = if (selectedMonster == 2) PlayerType.HUMAN else PlayerType.BOT),
+                PlayerModel(monsterName = "Lizard", lifePoints = 10, energyPoints = 0, victoryPoints = 0, isInTokyo = false, cards = emptyList(), playerType = if (selectedMonster == 3) PlayerType.HUMAN else PlayerType.BOT),
             )
         )
         currentPlayerIndex = selectedMonster
@@ -63,12 +64,12 @@ class MainViewModel : ViewModel() {
     }
 
     fun startCards() {
-        if (isCardFirstTime) {
+        if (_isCardFirstTime) {
             val temporaryCards = cardService.getCards().shuffled().take(2)
             _cards.clear()
             _cards.addAll(temporaryCards)
             cards.postValue(_cards)
-            isCardFirstTime = false
+            _isCardFirstTime = false
         }
     }
 
@@ -105,6 +106,9 @@ class MainViewModel : ViewModel() {
     // =======================
 
     fun isGameOver(): Boolean {
+        if (getHumanPlayer().lifePoints <= 0)
+            return true
+
         return _players.any { it.victoryPoints >= 20 } || _players.count { it.lifePoints > 0 } <= 1
     }
 
@@ -142,6 +146,7 @@ class MainViewModel : ViewModel() {
         Log.d("MainViewModel", "round: ${_round.value}, nextPlayer is ${_players[currentPlayerIndex].monsterName}")
 
         _haveAppliedTokyoEffects = false
+        _hasBoughtCard = false
         updateCurrentPlayer()
     }
 
@@ -219,6 +224,8 @@ class MainViewModel : ViewModel() {
             return bestAffordableCard
         }
 
+        resetCards()
+
         return null
     }
 
@@ -240,12 +247,17 @@ class MainViewModel : ViewModel() {
     }
 
     fun applyCardEffect(selectedCard: Int): Boolean {
+        if (_hasBoughtCard) {
+            return false
+        }
+
         val card = _cards.getOrNull(selectedCard)
         val currentPlayer = _players[currentPlayerIndex]
         val players = _players
         card?.let {
             return cardService.applyCardEffect(currentPlayer, players, card)
         }
+
         return false
     }
 }

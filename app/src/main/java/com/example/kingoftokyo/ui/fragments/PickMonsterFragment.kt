@@ -30,7 +30,6 @@ class PickMonsterFragment : Fragment() {
         val monsterRobot: LinearLayout = view.findViewById(R.id.monsterRobot)
 
         monsterDemon.setOnClickListener {
-            // Update selectedMonster value and UI
             selectedMonster = 0
             setSelectedMonster(monsterDemon, monsterDragon, monsterLizard, monsterRobot)
         }
@@ -40,14 +39,14 @@ class PickMonsterFragment : Fragment() {
             setSelectedMonster(monsterDragon, monsterDemon, monsterLizard, monsterRobot)
         }
 
-        monsterLizard.setOnClickListener {
+        monsterRobot.setOnClickListener {
             selectedMonster = 2
-            setSelectedMonster(monsterLizard, monsterDemon, monsterDragon, monsterRobot)
+            setSelectedMonster(monsterRobot, monsterDemon, monsterDragon, monsterLizard)
         }
 
-        monsterRobot.setOnClickListener {
+        monsterLizard.setOnClickListener {
             selectedMonster = 3
-            setSelectedMonster(monsterRobot, monsterDemon, monsterDragon, monsterLizard)
+            setSelectedMonster(monsterLizard, monsterDemon, monsterDragon, monsterRobot)
         }
 
         nextButton.setOnClickListener {

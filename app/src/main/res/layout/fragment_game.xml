@@ -151,7 +151,7 @@
 
         <!-- Button for cards modal -->
         <ImageButton
-            android:id="@+id/openCardsButton"
+            android:id="@+id/openCardModalButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:scaleType="fitCenter"
@@ -160,7 +160,8 @@
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:src="@drawable/cards"
             tools:ignore="MissingConstraints"
-            android:elevation="4dp"/>
+            android:elevation="4dp"
+            android:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
