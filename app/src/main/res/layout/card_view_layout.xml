@@ -21,8 +21,8 @@
             android:scaleType="centerCrop"
             android:src="@drawable/card_meteor"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
+            app:layout_constraintTop_toTopOf="parent"
+            android:elevation="4dp"/>
         <!-- Price card -->
         <LinearLayout
             android:layout_width="wrap_content"
@@ -31,7 +31,8 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            android:elevation="4dp">
 
             <!-- Energy image -->
             <ImageView
@@ -40,7 +41,8 @@
                 android:layout_height="15dp"
                 android:layout_gravity="center_vertical"
                 android:scaleType="centerInside"
-                android:src="@drawable/energy" />
+                android:src="@drawable/energy"
+                android:elevation="4dp"/>
 
             <!-- Price text -->
             <TextView
@@ -50,7 +52,8 @@
                 android:gravity="center_vertical"
                 android:text="0"
                 android:textColor="#000000"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:elevation="4dp"/>
         </LinearLayout>
 
         <!-- Card details -->
@@ -73,7 +76,8 @@
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:paddingBottom="2dp" />
+                android:paddingBottom="2dp"
+                android:elevation="4dp"/>
 
             <!-- Description card (texte centré) -->
             <TextView
@@ -84,7 +88,8 @@
                 android:textColor="#000000"
                 android:textSize="10sp"
                 android:gravity="center"
-                android:paddingBottom="3dp" />
+                android:paddingBottom="3dp"
+                android:elevation="4dp"/>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

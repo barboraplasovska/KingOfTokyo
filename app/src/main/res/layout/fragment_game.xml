@@ -29,7 +29,8 @@
                     android:text="Round n°1"
                     android:textSize="24sp"
                     android:textColor="#ffffff"
-                    android:padding="16dp" />
+                    android:padding="16dp"
+                    android:elevation="4dp"/>
         </androidx.appcompat.widget.Toolbar>
 
         <androidx.fragment.app.FragmentContainerView
@@ -42,7 +43,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/dragonCard"
                 android:layout_margin="16dp"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:elevation="4dp"/>
 
         <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/dragonCard"
@@ -54,7 +56,8 @@
                 app:layout_constraintStart_toEndOf="@+id/demonCard"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_margin="16dp"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:elevation="4dp"/>
 
         <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/lizardCard"
@@ -65,7 +68,8 @@
                 app:layout_constraintTop_toBottomOf="@+id/demonCard"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/robotCard"
-                android:layout_margin="16dp" />
+                android:layout_margin="16dp"
+                android:elevation="4dp"/>
 
         <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/robotCard"
@@ -76,7 +80,8 @@
                 app:layout_constraintTop_toBottomOf="@+id/dragonCard"
                 app:layout_constraintStart_toEndOf="@+id/lizardCard"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_margin="16dp" />
+                android:layout_margin="16dp"
+                android:elevation="4dp"/>
 
         <!-- Dice Fragment with proper vertical constraints -->
         <androidx.fragment.app.FragmentContainerView
@@ -86,6 +91,7 @@
                 android:paddingHorizontal="16dp"
                 android:name="com.example.kingoftokyo.ui.fragments.DiceFragment"
                 android:layout_marginTop="32dp"
+                android:elevation="4dp"
                 app:layout_constraintTop_toBottomOf="@+id/lizardCard" />
 
         <LinearLayout
@@ -98,7 +104,8 @@
             app:layout_constraintTop_toBottomOf="@+id/diceFragmentContainer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:elevation="4dp">
 
             <Button
                 android:id="@+id/leaveTokyoButton"
@@ -108,7 +115,8 @@
                 android:backgroundTint="#EEBF81"
                 android:textColor="#000000"
                 android:layout_marginEnd="8dp"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:elevation="4dp"/>
 
             <View
                 android:layout_width="0dp"
@@ -124,6 +132,7 @@
                 android:textColor="#000000"
                 android:layout_marginStart="8dp"
                 android:visibility="gone"
+                android:elevation="4dp"
                 />
 
             <Button
@@ -135,6 +144,7 @@
                 android:textColor="#000000"
                 android:layout_marginStart="8dp"
                 android:visibility="gone"
+                android:elevation="4dp"
                 />
 
         </LinearLayout>
@@ -149,7 +159,8 @@
             android:layout_marginTop="40dp"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:src="@drawable/cards"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints"
+            android:elevation="4dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

@@ -28,7 +28,8 @@
                 android:layout_height="45dp"
                 android:text="Roll"
                 android:backgroundTint="#EEBF81"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:elevation="4dp"/>
 
         <!-- Spacer View -->
         <View
@@ -44,7 +45,8 @@
                 android:text="Validate"
                 android:visibility="gone"
                 android:backgroundTint="#B0EE81"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:elevation="4dp"/>
 
     </LinearLayout>
 
@@ -57,7 +59,8 @@
             app:layout_constraintTop_toBottomOf="@+id/buttonContainer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:gravity="center">
+            android:gravity="center"
+        >
 
         <com.example.kingoftokyo.ui.components.DiceView
                 android:id="@+id/dice1"

@@ -15,12 +15,13 @@
 
         <!-- Dice Image -->
         <ImageView
-                android:id="@+id/diceImage"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:layout_gravity="center"
-                android:src="@drawable/dice_one"
-        android:contentDescription="Dice Face" />
+            android:id="@+id/diceImage"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_gravity="center"
+            android:src="@drawable/dice_one"
+            android:contentDescription="Dice Face"
+            android:elevation="4dp" />
 
         <!-- Locked Overlay (gray) -->
         <FrameLayout
@@ -29,7 +30,8 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/darker_gray"
                 android:alpha="0.5"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:elevation="4dp"/>
 
     </FrameLayout>
 </androidx.cardview.widget.CardView>

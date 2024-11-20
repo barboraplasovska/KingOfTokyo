@@ -50,10 +50,10 @@ class MainViewModel : ViewModel() {
         _players.clear()
         _players.addAll(
             listOf(
-                PlayerModel(monsterName = "Demon", lifePoints = 10, energyPoints = 50, victoryPoints = 0, isInTokyo = false, cards = emptyList(), playerType = if (selectedMonster == 0) PlayerType.HUMAN else PlayerType.BOT),
-                PlayerModel(monsterName = "Dragon", lifePoints = 0, energyPoints = -50, victoryPoints = 0, isInTokyo = false, cards = emptyList(), playerType = if (selectedMonster == 1) PlayerType.HUMAN else PlayerType.BOT),
-                PlayerModel(monsterName = "Lizard", lifePoints = 10, energyPoints = -50, victoryPoints = 0, isInTokyo = false, cards = emptyList(), playerType = if (selectedMonster == 2) PlayerType.HUMAN else PlayerType.BOT),
-                PlayerModel(monsterName = "Robot", lifePoints = 10, energyPoints = -50, victoryPoints = 0, isInTokyo = false, cards = emptyList(), playerType = if (selectedMonster == 3) PlayerType.HUMAN else PlayerType.BOT),
+                PlayerModel(monsterName = "Demon", lifePoints = 10, energyPoints = 0, victoryPoints = 0, isInTokyo = false, cards = emptyList(), playerType = if (selectedMonster == 0) PlayerType.HUMAN else PlayerType.BOT),
+                PlayerModel(monsterName = "Dragon", lifePoints = 10, energyPoints = 0, victoryPoints = 0, isInTokyo = false, cards = emptyList(), playerType = if (selectedMonster == 1) PlayerType.HUMAN else PlayerType.BOT),
+                PlayerModel(monsterName = "Lizard", lifePoints = 10, energyPoints = 0, victoryPoints = 0, isInTokyo = false, cards = emptyList(), playerType = if (selectedMonster == 2) PlayerType.HUMAN else PlayerType.BOT),
+                PlayerModel(monsterName = "Robot", lifePoints = 10, energyPoints = 0, victoryPoints = 0, isInTokyo = false, cards = emptyList(), playerType = if (selectedMonster == 3) PlayerType.HUMAN else PlayerType.BOT),
             )
         )
         currentPlayerIndex = selectedMonster

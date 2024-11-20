@@ -2,25 +2,23 @@ package com.example.kingoftokyo.core.services
 
 import CardModel
 import PlayerModel
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
 
 class CardService {
    private val cards: List<CardModel> = listOf(
       CardModel(
          name = "Alien Metabolism",
-         price = 3,
-         description = "Recover 2 life points.",
-         effect = { player, _, _ -> player.heal(2) }
+         price = 2,
+         description = "Recover 1 life points.",
+         effect = { player, _, _ -> player.heal(1) }
       ),
       CardModel(
          name = "Complete Destruction",
          price = 5,
-         description = "Deal 2 damage to all other players.",
+         description = "Deal 3 damage to all other players.",
          effect = { currentPlayer, playerList, _ ->
             var list = playerList.toMutableList()
             list.remove(currentPlayer)
-            list.forEach { it.takeDamage(2) }
+            list.forEach { it.takeDamage(3) }
          }
       ),
       CardModel(
@@ -38,12 +36,12 @@ class CardService {
       CardModel(
          name = "Poison Lava",
          price = 3,
-         description = "Deal 1 damage to everyone.",
+         description = "Deal 1 damage to all other players.",
          effect = { _, playerList, _ -> playerList.forEach { it.takeDamage(1) } }
       ),
       CardModel(
          name = "Energy Hoarder",
-         price = 5,
+         price = 1,
          description = "Gain 3 energy points if you’re in Tokyo.",
          effect = { player, _, _ -> if (player.isInTokyo) player.gainEnergy(3) }
       ),
@@ -60,7 +58,7 @@ class CardService {
          effect = { player, _, _ -> player.isInTokyo = false; player.heal(1) }
       ),
       CardModel(
-         name = "Meteor",
+         name = "Tokyo Meteor",
          price = 7,
          description = "Deal 5 damage to each player in Tokyo.",
          effect = { _, playerList, _ -> playerList.filter { it.isInTokyo }.forEach { it.takeDamage(5) } }
@@ -86,7 +84,7 @@ class CardService {
       CardModel(
          name = "Tsunami",
          price = 6,
-         description = "Deal 3 damage to all players except yourself.",
+         description = "Deal 3 damage to all players.",
          effect = { player, playerList, _ -> playerList.filter { it != player }.forEach { it.takeDamage(3) } }
       )
    )

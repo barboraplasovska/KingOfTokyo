@@ -21,6 +21,7 @@
             android:layout_marginHorizontal="8dp"
             android:layout_marginVertical="5dp"
             android:padding="1dp"
+            android:elevation="4dp"
             android:background="@drawable/card_unselected_background"/>
 
         <FrameLayout
@@ -30,6 +31,7 @@
             android:layout_marginHorizontal="8dp"
             android:layout_marginVertical="5dp"
             android:padding="1dp"
+            android:elevation="4dp"
             android:background="@drawable/card_unselected_background"/>
     </LinearLayout>
 
@@ -47,7 +49,8 @@
             android:backgroundTint="#EE8181"
             android:textColor="#000000"
             android:padding="10dp"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginEnd="8dp"
+            android:elevation="4dp"/>
 
         <Button
             android:id="@+id/cardsFragmentValidateButton"
@@ -58,6 +61,7 @@
             android:textColor="#000000"
             android:padding="15dp"
             android:layout_marginStart="8dp"
+            android:elevation="4dp"
             />
     </LinearLayout>
 
