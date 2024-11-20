@@ -298,6 +298,10 @@ class MainViewModel : ViewModel() {
 
     // Helper to update the currentPlayer LiveData
     private fun updateCurrentPlayer() {
+        if (isGameOver()) {
+            _isGameOver.postValue(true)
+            return
+        }
         val newPlayer = _players[currentPlayerIndex].deepCopy()
         _currentPlayer.postValue(newPlayer)
     }

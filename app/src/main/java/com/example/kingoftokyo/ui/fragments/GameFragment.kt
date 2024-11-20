@@ -146,6 +146,8 @@ class GameFragment : Fragment() {
     private fun setupValidateDiceButton() {
         diceFragment.onValidateDiceClick = {
             viewLifecycleOwner.lifecycleScope.launch {
+                diceFragment.disableDiceAndButtons()
+
                 mainViewModel.playerApplyDiceEffects(diceFragment.diceModels)
                 if (mainViewModel.wasBotPlayerHit(diceFragment.diceModels)) {
                     val player = mainViewModel.getHumanPlayer()
@@ -164,9 +166,7 @@ class GameFragment : Fragment() {
                 mainViewModel.playerEnterTokyo()
 
                 updateAllPlayers()
-                delay(500)
-
-                diceFragment.disableDiceAndButtons()
+                delay(200)
 
                 showCardsModalForPlayer()
 
@@ -296,7 +296,7 @@ class GameFragment : Fragment() {
             val loss = mainViewModel.getPlayerLoss(diceFragment.diceModels)
 
             val tokyoPlayerName = mainViewModel.getTokyoPlayer()?.monsterName
-            val isHumanPlayerHit = mainViewModel.wasHumanPlayerHit(diceFragment.diceModels)
+            val isHumanPlayerHit = mainViewModel.wasHumanPlayerHit(diceFragment.diceModels) && tokyoPlayerName != monsterName // if human was hit and he is in tokyo
             val isBotPlayerHit = mainViewModel.wasBotPlayerHit(diceFragment.diceModels)
 
             if (tokyoPlayerName == monsterName) {
@@ -316,6 +316,9 @@ class GameFragment : Fragment() {
                 handleBotPlayerWasHit()
             }
             botBuyCards(monsterName)
+            if (!isHumanPlayerHit) {
+                mainViewModel.nextPlayer()
+            }
         }
     }
 
@@ -364,8 +367,6 @@ class GameFragment : Fragment() {
         delay(1000)
         updateAllPlayers()
         delay(2000)
-
-        mainViewModel.nextPlayer()
     }
 
     // =======================
@@ -474,7 +475,6 @@ class GameFragment : Fragment() {
 
         dialogFragment.onDismissCallback = {
             updateAllPlayers()
-           // mainViewModel.resetCards()
         }
 
 

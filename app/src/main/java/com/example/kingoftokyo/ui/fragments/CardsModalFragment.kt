@@ -95,6 +95,7 @@ class CardsModalFragment : DialogFragment() {
             purchasedCard?.let { card ->
                 cardFragments[0].setCardData(card)
                 cardContainers[1].visibility = View.GONE
+                cardContainers[2].visibility = View.GONE
             }
         }
     }
@@ -107,6 +108,7 @@ class CardsModalFragment : DialogFragment() {
         mainViewModel.cards.observe(viewLifecycleOwner) { cards ->
             cardFragments[0].setCardData(cards[0])
             cardContainers[1].visibility = View.GONE
+            cardContainers[2].visibility = View.GONE
         }
     }
 
