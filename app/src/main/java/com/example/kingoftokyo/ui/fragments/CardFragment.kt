@@ -37,6 +37,7 @@ class CardFragment : Fragment() {
         cardPrice = view.findViewById(R.id.cardPrice)
         cardName = view.findViewById(R.id.cardName)
         cardDescription = view.findViewById(R.id.cardDescription)
+
     }
 
     fun setCardData(card: CardModel) {
@@ -58,6 +59,7 @@ class CardFragment : Fragment() {
             "Victory Parade" -> R.drawable.card_victory_parade
             "Tsunami" -> R.drawable.card_tsunami
             else -> R.drawable.tokyo
+
         })
     }
 }

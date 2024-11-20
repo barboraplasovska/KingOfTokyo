@@ -64,6 +64,7 @@ class MainViewModel : ViewModel() {
         )
         currentPlayerIndex = selectedMonster
         _firstPlayer = selectedMonster
+        _round.postValue(1)
         updateCurrentPlayer()
         startCards()
     }
@@ -108,11 +109,9 @@ class MainViewModel : ViewModel() {
         return diceList.count { it.face == DiceFace.CLAW }
     }
 
-    fun getCardDescription() : String? {
+    fun getSelectedCard() : CardModel? {
         val cardIndex = selectedCard.value ?: -1
-        return _cards.value?.let {
-            it.getOrNull(cardIndex)?.description
-        }
+        return _cards.value?.getOrNull(cardIndex)
         return null
     }
 

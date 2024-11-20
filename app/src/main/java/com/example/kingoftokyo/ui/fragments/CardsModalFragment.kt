@@ -16,6 +16,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.kingoftokyo.R
+import com.example.kingoftokyo.core.enums.ModalType
 import com.example.kingoftokyo.core.viewModels.MainViewModel
 import com.example.kingoftokyo.ui.fragments.CardFragment
 import kotlinx.coroutines.delay
@@ -33,8 +34,11 @@ class CardsModalFragment : DialogFragment() {
     var selectedCard: Int? = null
     var onDismissCallback: (() -> Unit)? = null
     var onValidateCardsCallback: (() -> Unit)? = null
-    var isForBot: Boolean = false
     var botName: String = "Bot"
+
+    var modalType: ModalType = ModalType.PLAYER_VIEW
+    var purchasedCard: CardModel? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,18 +56,15 @@ class CardsModalFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize card containers and buttons
         cardContainers = listOf(
             view.findViewById(R.id.cardsFragmentCard1),
             view.findViewById(R.id.cardsFragmentCard2)
         )
+
         validateButton = view.findViewById(R.id.cardsFragmentValidateButton)
         cancelButton = view.findViewById(R.id.cardsFragmentCancelButton)
-
         botBoughtTitle = view.findViewById(R.id.botBoughtTitle)
-        botBoughtTitle.text = "$botName bought:"
 
-        // Initialize CardFragments dynamically
         cardContainers.forEach { container ->
             val cardFragment = CardFragment()
             cardFragments.add(cardFragment)
@@ -72,10 +73,10 @@ class CardsModalFragment : DialogFragment() {
                 .commit()
         }
 
-        if (isForBot) {
-            setupBotCardView()
-        } else {
-            setupPlayerCardView()
+        when (modalType) {
+            ModalType.PLAYER_VIEW -> setupPlayerCardView()
+            ModalType.BOT_VIEW -> setupBotCardView()
+            ModalType.PLAYER_PURCHASE -> setupPlayerPurchaseView()
         }
     }
 
@@ -83,26 +84,39 @@ class CardsModalFragment : DialogFragment() {
         dismiss()
     }
 
+    private fun setupPlayerPurchaseView() {
+        validateButton.visibility = View.GONE
+        cancelButton.visibility = View.GONE
+        botBoughtTitle.text = "You bought this card:"
+        botBoughtTitle.visibility = View.VISIBLE
+
+        mainViewModel.selectedCard.observe(viewLifecycleOwner) { selectedCard ->
+            purchasedCard?.let { card ->
+                cardFragments[0].setCardData(card)
+                cardContainers[1].visibility = View.GONE
+            }
+        }
+    }
+
     private fun setupBotCardView() {
         validateButton.visibility = View.GONE
         cancelButton.visibility = View.GONE
         botBoughtTitle.visibility = View.VISIBLE
 
-        // Display a single card for the bot
         mainViewModel.cards.observe(viewLifecycleOwner) { cards ->
-            cardFragments[0].setCardData(cards[0]) // Assuming bot buys the first card
-            cardContainers[1].visibility = View.GONE // Hide the second card container
+            cardFragments[0].setCardData(cards[0])
+            cardContainers[1].visibility = View.GONE
         }
     }
 
     private fun setupPlayerCardView() {
         botBoughtTitle.visibility = View.GONE
 
-        // Display multiple cards for the player
         mainViewModel.cards.observe(viewLifecycleOwner) { cards ->
             cards.forEachIndexed { index, card ->
                 if (index < cardFragments.size) {
                     cardFragments[index].setCardData(card)
+                    cardContainers[index].visibility = View.VISIBLE
                 }
             }
         }
@@ -138,46 +152,23 @@ class CardsModalFragment : DialogFragment() {
         }
     }
 
-//    private fun validateCard() {
-//        selectedCard?.let { cardIndex ->
-//            mainViewModel.selectedCard.value = cardIndex
-//
-//            if (mainViewModel.applyCardEffect(cardIndex)) {
-//                displayToast("You used your energy!", false)
-//                mainViewModel.resetCards()
-//                onValidateCallback?.invoke()
-//                dismiss()
-//            } else {
-//                displayToast("Not enough energy!", true)
-//            }
-//        } ?: run {
-//            displayToast("Select a card!", true)
-//        }
-//    }
-
-//    private fun displayToast(text: String = "Undefined", isRed: Boolean = false) {
-//        val toastLayout = layoutInflater.inflate(R.layout.custom_toast_layout, null)
-//        val toastText = toastLayout.findViewById<TextView>(R.id.toast_message)
-//        toastText.text = text
-//        toastText.setTextColor(if (isRed) Color.RED else Color.BLACK)
-//        val toast = Toast(requireContext())
-//        toast.duration = Toast.LENGTH_SHORT
-//        toast.view = toastLayout
-//        toast.setGravity(Gravity.TOP, 0, (Resources.getSystem().displayMetrics.heightPixels / 5))
-//        toast.show()
-//    }
-
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         onDismissCallback?.invoke()
     }
 
     companion object {
-        fun newInstance(isForBot: Boolean = false, botName: String = "bot"): CardsModalFragment {
+        fun newInstance(
+            modalType: ModalType = ModalType.PLAYER_VIEW,
+            botName: String = "bot",
+            purchasedCard: CardModel? = null
+        ): CardsModalFragment {
             return CardsModalFragment().apply {
-                this.isForBot = isForBot
+                this.modalType = modalType
                 this.botName = botName
+                this.purchasedCard = purchasedCard
             }
         }
     }
+
 }

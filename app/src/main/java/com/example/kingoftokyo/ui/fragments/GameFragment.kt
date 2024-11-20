@@ -1,5 +1,6 @@
 package com.example.kingoftokyo.ui.fragments
 
+import CardModel
 import PlayerModel
 import android.app.Dialog
 import android.content.res.Resources
@@ -25,9 +26,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.kingoftokyo.R
+import com.example.kingoftokyo.core.enums.ModalType
 import com.example.kingoftokyo.core.viewModels.MainViewModel
 import com.example.kingoftokyo.core.enums.PlayerType
 import com.example.kingoftokyo.core.enums.ToastType
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -398,7 +401,7 @@ class GameFragment : Fragment() {
 
     // Card modal
     private fun showCardsModalForPlayer() {
-        val dialogFragment = CardsModalFragment.newInstance()
+        val dialogFragment = CardsModalFragment.newInstance(ModalType.PLAYER_VIEW)
         dialogFragment.onDismissCallback = {
            updateAllPlayers()
 
@@ -412,9 +415,13 @@ class GameFragment : Fragment() {
 
                     openCardModalButton.visibility = View.GONE
 
-                    // FIXME: show modal what i bought
-
                     dialogFragment.forceDismiss()
+
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        mainViewModel.getSelectedCard()?.let { selectedCard ->
+                            showPurchasedCardForPlayer(selectedCard)
+                        }
+                    }
                 } else {
                     var player = mainViewModel.getHumanPlayer()
                     displayCustomToast(
@@ -435,7 +442,7 @@ class GameFragment : Fragment() {
     }
 
     private suspend fun showCardsModalForBot(monsterName: String) {
-        val dialogFragment = CardsModalFragment.newInstance(isForBot = true, botName = monsterName)
+        val dialogFragment = CardsModalFragment.newInstance(ModalType.BOT_VIEW, botName = monsterName)
 
         dialogFragment.onDismissCallback = {
             updateAllPlayers()
@@ -445,6 +452,17 @@ class GameFragment : Fragment() {
 
         dialogFragment.show(childFragmentManager, "BotCardModal")
         delay(3000)
+        dialogFragment.forceDismiss()
+    }
+
+    private suspend fun showPurchasedCardForPlayer(card: CardModel) {
+        val dialogFragment = CardsModalFragment.newInstance().apply {
+            modalType = ModalType.PLAYER_PURCHASE
+            purchasedCard = card
+        }
+
+        dialogFragment.show(childFragmentManager, "PlayerPurchasedCardModal")
+        delay(2000)
         dialogFragment.forceDismiss()
     }
 
