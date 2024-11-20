@@ -6,6 +6,7 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.renderscript.Script.LaunchOptions
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -14,8 +15,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
@@ -274,7 +277,7 @@ class GameFragment : Fragment() {
             botRerollDice()
             botApplyDiceEffects()
             if (mainViewModel.wasHumanPlayerHit(diceFragment.diceModels)) {
-                handleHumanPlayerWasHit()
+                handleHumanPlayerWasHit(mainViewModel.getPlayerLoss(diceFragment.diceModels))
             } else {
                 handleBotPlayerWasHit()
                 botBuyCards(monsterName)
@@ -307,17 +310,17 @@ class GameFragment : Fragment() {
     private suspend fun botBuyCards(monsterName: String) {
         val affordedCard = mainViewModel.botBuyCards()
         if (affordedCard != null) {
-//            val textToDisplayInToast = affordedCard.name + " used !"
-//            displayToast(textToDisplayInToast, false)
-
             showCardsModalForBot(monsterName)
         }
     }
 
-    private fun handleHumanPlayerWasHit() {
+    private fun handleHumanPlayerWasHit(loss: Int) {
         leaveTokyoButton.visibility = View.VISIBLE
         leaveTokyoButton.isEnabled = true
         stayInTokyoButton.visibility = View.VISIBLE
+
+        // show toast
+        displayLostLifeToast(loss)
     }
 
     private suspend fun handleBotPlayerWasHit() {
@@ -402,8 +405,18 @@ class GameFragment : Fragment() {
            finishTurnButton.visibility = View.VISIBLE // he can finish his turn now
         }
 
-        dialogFragment.onValidateCallback = {
-            openCardModalButton.visibility = View.GONE
+        dialogFragment.onValidateCardsCallback = {
+            if (mainViewModel.hasUserSelectedCard()) {
+                if (mainViewModel.canUserBuyCard()) {
+                    mainViewModel.playerApplyCardEffect()
+
+                    openCardModalButton.visibility = View.GONE
+                } else {
+                    displayToast("You can't afford this card!", isRed = true, player = mainViewModel.currentPlayer.value)
+                }
+            } else {
+                displayToast("You must select a card!", isRed = true)
+            }
         }
 
         dialogFragment.show(childFragmentManager, "PlayerCardModal")
@@ -489,4 +502,68 @@ class GameFragment : Fragment() {
         toast.setGravity(Gravity.TOP, 0, (Resources.getSystem().displayMetrics.heightPixels / 5))
         toast.show()
     }
+
+    private fun displayLostLifeToast(loss: Int) {
+        val toastLayout = layoutInflater.inflate(R.layout.custom_toast_layout, null)
+
+        val heartLayout = toastLayout.findViewById<LinearLayout>(R.id.heart_layout)
+        val toastMessage = toastLayout.findViewById<TextView>(R.id.toast_message)
+        val toastNumber = toastLayout.findViewById<TextView>(R.id.toast_number)
+
+        heartLayout.visibility = View.VISIBLE
+
+        toastMessage.text = "You were hit!"
+
+        toastNumber.text = "- $loss"
+        toastNumber.setTextColor(Color.RED)
+
+        val toast = Toast(requireContext())
+        toast.duration = Toast.LENGTH_SHORT
+        toast.view = toastLayout
+        toast.setGravity(Gravity.TOP, 0, (Resources.getSystem().displayMetrics.heightPixels / 5))
+        toast.show()
+    }
+
+    private fun displayToast(text: String = "Undefined", isRed: Boolean = false, player: PlayerModel? = null) {
+        val toastLayout = layoutInflater.inflate(R.layout.custom_toast_layout, null)
+
+        // Get references to the views in the layout
+        val toastText = toastLayout.findViewById<TextView>(R.id.toast_message)
+        val toastMessageWithContent = toastLayout.findViewById<TextView>(R.id.toast_message_with_content)
+        val heartLayout = toastLayout.findViewById<LinearLayout>(R.id.heart_layout)
+        val energyLayout = toastLayout.findViewById<LinearLayout>(R.id.energy_layout)
+        val toastNumber = toastLayout.findViewById<TextView>(R.id.toast_number)
+        val toastEnergyText = toastLayout.findViewById<TextView>(R.id.toast_energy_text)
+
+        // Set the message text
+        toastText.text = text
+        toastMessageWithContent.text = text
+        toastText.setTextColor(if (isRed) Color.RED else Color.BLACK)
+        toastMessageWithContent.setTextColor(if (isRed) Color.RED else Color.BLACK)
+
+        if (player != null) {
+            // If there's a player, show energy-related toast
+            toastText.visibility = View.GONE
+            toastMessageWithContent.visibility = View.VISIBLE
+            heartLayout.visibility = View.GONE
+            energyLayout.visibility = View.VISIBLE
+            toastEnergyText.text = "You have ${player.energyPoints}"
+
+        } else {
+            // If no player (or if it's a card selection toast), show title only
+            toastText.visibility = View.VISIBLE
+            toastMessageWithContent.visibility = View.GONE
+            heartLayout.visibility = View.GONE
+            energyLayout.visibility = View.GONE
+        }
+
+        // Create the toast and show it
+        val toast = Toast(requireContext())
+        toast.duration = Toast.LENGTH_SHORT
+        toast.view = toastLayout
+        toast.setGravity(Gravity.TOP, 0, (Resources.getSystem().displayMetrics.heightPixels / 5))
+        toast.show()
+    }
+
 }
+

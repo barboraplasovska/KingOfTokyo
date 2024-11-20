@@ -2,7 +2,6 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape xmlns:android="http://schemas.android.com/apk/res/android">
-            <solid android:color="#80000000"/> <!-- Ombre gris clair -->
             <corners android:radius="16dp"/> <!-- Coins arrondis -->
         </shape>
     </item>

@@ -4,9 +4,12 @@ import CardModel
 import DiceModel
 import PlayerModel
 import android.util.Log
+import android.view.LayoutInflater
+import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.kingoftokyo.R
 import com.example.kingoftokyo.core.enums.DiceFace
 import com.example.kingoftokyo.core.enums.PlayerType
 import com.example.kingoftokyo.core.services.BotService
@@ -25,8 +28,11 @@ class MainViewModel : ViewModel() {
     private val _isGameOver = MutableLiveData<Boolean>(false)
     val isGameOver: LiveData<Boolean> = _isGameOver
 
-    val cards: MutableLiveData<List<CardModel>> = MutableLiveData()
-    private var _cards = mutableListOf<CardModel>()
+    private var _cards : MutableLiveData<List<CardModel>> = MutableLiveData(emptyList())
+    val cards: LiveData<List<CardModel>> = _cards
+
+    private var _selectedCard: MutableLiveData<Int?> =  MutableLiveData(null)
+    val selectedCard: LiveData<Int?> = _selectedCard
 
     // Services
     private val gameService: GameService = GameService()
@@ -40,7 +46,6 @@ class MainViewModel : ViewModel() {
     private var _hasBoughtCard = false
     private var _firstPlayer = 0
 
-    val selectedCard: MutableLiveData<Int?> = MutableLiveData(null)
     private var _isCardFirstTime: Boolean = true
 
     // =======================
@@ -66,9 +71,7 @@ class MainViewModel : ViewModel() {
     fun startCards() {
         if (_isCardFirstTime) {
             val temporaryCards = cardService.getCards().shuffled().take(2)
-            _cards.clear()
-            _cards.addAll(temporaryCards)
-            cards.postValue(_cards)
+            _cards.postValue(temporaryCards)
             _isCardFirstTime = false
         }
     }
@@ -101,6 +104,25 @@ class MainViewModel : ViewModel() {
         return _currentPlayer.value?.playerType
     }
 
+    fun getPlayerLoss(diceList: List<DiceModel>) : Int {
+        return diceList.count { it.face == DiceFace.CLAW }
+    }
+
+    fun getCardDescription(cardIndex: Int) : String? {
+        return _cards.value?.let {
+            it.getOrNull(cardIndex)?.description
+        }
+        return null
+    }
+
+    // =======================
+    // Setters
+    // =======================
+
+    fun setSelectedCard(cardIndex: Int) {
+        _selectedCard.postValue(cardIndex)
+    }
+
     // =======================
     // Game State & Status Check Functions
     // =======================
@@ -119,6 +141,24 @@ class MainViewModel : ViewModel() {
     fun wasBotPlayerHit(diceList: List<DiceModel>) : Boolean {
         val tokyoPlayer: PlayerModel = getTokyoPlayer() ?: return false
         return diceList.any { it.face == DiceFace.CLAW } && tokyoPlayer.playerType == PlayerType.BOT
+    }
+
+    fun hasUserSelectedCard() : Boolean {
+        selectedCard.value?.let {
+            return _cards.value?.getOrNull(it) != null
+        }
+        return false
+    }
+
+    fun canUserBuyCard() : Boolean {
+        val currentPlayer = _players[currentPlayerIndex]
+        val card = _cards.value?.getOrNull(selectedCard.value ?: -1)
+
+        card?.let {
+            return currentPlayer.energyPoints >= it.price
+        }
+
+        return false
     }
 
     // =======================
@@ -145,6 +185,7 @@ class MainViewModel : ViewModel() {
 
         Log.d("MainViewModel", "round: ${_round.value}, nextPlayer is ${_players[currentPlayerIndex].monsterName}")
 
+        _selectedCard.postValue(null)
         _haveAppliedTokyoEffects = false
         _hasBoughtCard = false
         updateCurrentPlayer()
@@ -184,6 +225,21 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun playerApplyCardEffect(): Boolean {
+        if (_hasBoughtCard) {
+            return false
+        }
+
+        val card = _cards.value?.getOrNull(selectedCard.value ?: -1)
+        val currentPlayer = _players[currentPlayerIndex]
+        val players = _players
+        card?.let {
+            return cardService.applyCardEffect(currentPlayer, players, card)
+        }
+
+        return false
+    }
+
     // =======================
     // Bot Actions
     // =======================
@@ -217,11 +273,12 @@ class MainViewModel : ViewModel() {
     fun botBuyCards(): CardModel? {
         val currentPlayer = _players[currentPlayerIndex]
         val players = _players
-        val cards = _cards
-        if (botService.buyCards(currentPlayer, players, cards)) {
-            val bestAffordableCard = botService.bestAffordableCard(currentPlayer, cards)
-            resetCards()
-            return bestAffordableCard
+        _cards.value?.let { cards ->
+            if (botService.buyCards(currentPlayer, players, cards)) {
+                val bestAffordableCard = botService.bestAffordableCard(currentPlayer, cards)
+                resetCards()
+                return bestAffordableCard
+            }
         }
 
         resetCards()
@@ -241,23 +298,6 @@ class MainViewModel : ViewModel() {
 
     fun resetCards() {
         val newCards = cardService.getCards().shuffled().take(2)
-        _cards.clear()
-        _cards.addAll(newCards)
-        cards.postValue(_cards)
-    }
-
-    fun applyCardEffect(selectedCard: Int): Boolean {
-        if (_hasBoughtCard) {
-            return false
-        }
-
-        val card = _cards.getOrNull(selectedCard)
-        val currentPlayer = _players[currentPlayerIndex]
-        val players = _players
-        card?.let {
-            return cardService.applyCardEffect(currentPlayer, players, card)
-        }
-
-        return false
+        _cards.postValue(newCards)
     }
 }

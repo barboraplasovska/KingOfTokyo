@@ -30,9 +30,9 @@ class CardsModalFragment : DialogFragment() {
     private lateinit var botBoughtTitle: TextView
 
     private val cardFragments = mutableListOf<CardFragment>() // List of CardFragments
-    private var selectedCard: Int? = null // Tracks the selected card
+    var selectedCard: Int? = null
     var onDismissCallback: (() -> Unit)? = null
-    var onValidateCallback: (() -> Unit)? = null
+    var onValidateCardsCallback: (() -> Unit)? = null
     var isForBot: Boolean = false
     var botName: String = "Bot"
 
@@ -109,7 +109,7 @@ class CardsModalFragment : DialogFragment() {
 
         setupCardClickListeners()
         validateButton.setOnClickListener {
-            validateCard()
+            onValidateCardsCallback?.invoke()
         }
         cancelButton.setOnClickListener {
             dismiss()
@@ -126,6 +126,7 @@ class CardsModalFragment : DialogFragment() {
 
     private fun selectCard(cardIndex: Int) {
         selectedCard = cardIndex
+        mainViewModel.setSelectedCard(cardIndex)
         updateCardSelection()
     }
 
@@ -137,34 +138,34 @@ class CardsModalFragment : DialogFragment() {
         }
     }
 
-    private fun validateCard() {
-        selectedCard?.let { cardIndex ->
-            mainViewModel.selectedCard.value = cardIndex
+//    private fun validateCard() {
+//        selectedCard?.let { cardIndex ->
+//            mainViewModel.selectedCard.value = cardIndex
+//
+//            if (mainViewModel.applyCardEffect(cardIndex)) {
+//                displayToast("You used your energy!", false)
+//                mainViewModel.resetCards()
+//                onValidateCallback?.invoke()
+//                dismiss()
+//            } else {
+//                displayToast("Not enough energy!", true)
+//            }
+//        } ?: run {
+//            displayToast("Select a card!", true)
+//        }
+//    }
 
-            if (mainViewModel.applyCardEffect(cardIndex)) {
-                displayToast("You used your energy!", false)
-                mainViewModel.resetCards()
-                onValidateCallback?.invoke()
-                dismiss()
-            } else {
-                displayToast("Not enough energy!", true)
-            }
-        } ?: run {
-            displayToast("Select a card!", true)
-        }
-    }
-
-    private fun displayToast(text: String = "Undefined", isRed: Boolean = false) {
-        val toastLayout = layoutInflater.inflate(R.layout.custom_toast_layout, null)
-        val toastText = toastLayout.findViewById<TextView>(R.id.toast_message)
-        toastText.text = text
-        toastText.setTextColor(if (isRed) Color.RED else Color.BLACK)
-        val toast = Toast(requireContext())
-        toast.duration = Toast.LENGTH_SHORT
-        toast.view = toastLayout
-        toast.setGravity(Gravity.TOP, 0, (Resources.getSystem().displayMetrics.heightPixels / 5))
-        toast.show()
-    }
+//    private fun displayToast(text: String = "Undefined", isRed: Boolean = false) {
+//        val toastLayout = layoutInflater.inflate(R.layout.custom_toast_layout, null)
+//        val toastText = toastLayout.findViewById<TextView>(R.id.toast_message)
+//        toastText.text = text
+//        toastText.setTextColor(if (isRed) Color.RED else Color.BLACK)
+//        val toast = Toast(requireContext())
+//        toast.duration = Toast.LENGTH_SHORT
+//        toast.view = toastLayout
+//        toast.setGravity(Gravity.TOP, 0, (Resources.getSystem().displayMetrics.heightPixels / 5))
+//        toast.show()
+//    }
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)

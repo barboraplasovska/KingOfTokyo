@@ -29,6 +29,9 @@ class PickMonsterFragment : Fragment() {
         val monsterLizard: LinearLayout = view.findViewById(R.id.monsterLizard)
         val monsterRobot: LinearLayout = view.findViewById(R.id.monsterRobot)
 
+        selectedMonster = 0
+        setSelectedMonster(monsterDemon, monsterDragon, monsterLizard, monsterRobot)
+
         monsterDemon.setOnClickListener {
             selectedMonster = 0
             setSelectedMonster(monsterDemon, monsterDragon, monsterLizard, monsterRobot)
