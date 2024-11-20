@@ -135,12 +135,21 @@ class MainViewModel : ViewModel() {
     }
 
     fun wasHumanPlayerHit(diceList: List<DiceModel>) : Boolean {
-        return diceList.any { it.face == DiceFace.CLAW } && getHumanPlayer().isInTokyo
+        val humanPlayer = getHumanPlayer()
+        val attacker = _players[currentPlayerIndex]
+        if (attacker.isInTokyo) {
+            return diceList.any { it.face == DiceFace.CLAW }
+        }
+        return diceList.any { it.face == DiceFace.CLAW } && humanPlayer.isInTokyo
     }
 
     fun wasBotPlayerHit(diceList: List<DiceModel>) : Boolean {
-        val tokyoPlayer: PlayerModel = getTokyoPlayer() ?: return false
-        return diceList.any { it.face == DiceFace.CLAW } && tokyoPlayer.playerType == PlayerType.BOT
+        val attacker = _players[currentPlayerIndex]
+        if (attacker.isInTokyo) {
+            return diceList.any { it.face == DiceFace.CLAW }
+        }
+        val human = getHumanPlayer() // if human is not in tokyo, then the bot is
+        return diceList.any { it.face == DiceFace.CLAW } && !human.isInTokyo
     }
 
     fun hasUserSelectedCard() : Boolean {
@@ -166,6 +175,7 @@ class MainViewModel : ViewModel() {
     // =======================
 
     fun nextPlayer() {
+        resetCards()
         if (isGameOver()) {
             Log.d("MainViewModel", "Game over")
             _isGameOver.postValue(true)
@@ -276,12 +286,9 @@ class MainViewModel : ViewModel() {
         _cards.value?.let { cards ->
             if (botService.buyCards(currentPlayer, players, cards)) {
                 val bestAffordableCard = botService.bestAffordableCard(currentPlayer, cards)
-                resetCards()
                 return bestAffordableCard
             }
         }
-
-        resetCards()
 
         return null
     }

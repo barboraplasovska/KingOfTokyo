@@ -145,21 +145,32 @@ class GameFragment : Fragment() {
 
     private fun setupValidateDiceButton() {
         diceFragment.onValidateDiceClick = {
-            mainViewModel.playerApplyDiceEffects(diceFragment.diceModels)
+            viewLifecycleOwner.lifecycleScope.launch {
+                mainViewModel.playerApplyDiceEffects(diceFragment.diceModels)
+                if (mainViewModel.wasBotPlayerHit(diceFragment.diceModels)) {
+                    val player = mainViewModel.getHumanPlayer()
+                    val loss = mainViewModel.getPlayerLoss(diceFragment.diceModels)
 
-            if (mainViewModel.wasBotPlayerHit(diceFragment.diceModels)) {
-                mainViewModel.botPlayerHit()
+                    if (player.isInTokyo) {
+                        displayCustomToast("Everyone except ${player.monsterName} was hit!", ToastType.PLAYER_HIT, heartNb = loss)
+                    } else {
+                        val name = mainViewModel.getTokyoPlayer()?.monsterName ?: "Bot"
+                        displayCustomToast("${name} was hit!", ToastType.PLAYER_HIT, heartNb = loss)
+                    }
+                    mainViewModel.botPlayerHit()
+                    delay(2000)
+                }
+                mainViewModel.playerEnterTokyo()
+
+                updateAllPlayers()
+                delay(1000)
+
+                diceFragment.disableDiceAndButtons()
+
+                showCardsModalForPlayer()
+
+                openCardModalButton.visibility = View.VISIBLE
             }
-
-            mainViewModel.playerEnterTokyo()
-
-            updateAllPlayers()
-
-            diceFragment.disableDiceAndButtons()
-
-            showCardsModalForPlayer()
-
-            openCardModalButton.visibility = View.VISIBLE
         }
     }
 
@@ -167,7 +178,7 @@ class GameFragment : Fragment() {
         finishTurnButton.setOnClickListener {
             updateAllPlayers()
             mainViewModel.nextPlayer()
-            mainViewModel.resetCards() // reset cards after player playing
+           // mainViewModel.resetCards() // reset cards after player playing
         }
     }
 
@@ -280,12 +291,30 @@ class GameFragment : Fragment() {
             delay(1000)
             botRerollDice()
             botApplyDiceEffects()
-            if (mainViewModel.wasHumanPlayerHit(diceFragment.diceModels)) {
-                handleHumanPlayerWasHit(mainViewModel.getPlayerLoss(diceFragment.diceModels))
+
+            val loss = mainViewModel.getPlayerLoss(diceFragment.diceModels)
+
+            val tokyoPlayerName = mainViewModel.getTokyoPlayer()?.monsterName
+            val isHumanPlayerHit = mainViewModel.wasHumanPlayerHit(diceFragment.diceModels)
+            val isBotPlayerHit = mainViewModel.wasBotPlayerHit(diceFragment.diceModels)
+
+            if (tokyoPlayerName == monsterName) {
+                displayCustomToast("Everyone except ${monsterName} was hit!", ToastType.PLAYER_HIT, heartNb = loss)
             } else {
-                handleBotPlayerWasHit()
-                botBuyCards(monsterName)
+                val name = tokyoPlayerName ?: "Bot"
+                if (isHumanPlayerHit) {
+                    displayCustomToast("You were hit!", ToastType.PLAYER_HIT, heartNb = loss)
+                } else if (isBotPlayerHit) {
+                    displayCustomToast("$name was hit!", ToastType.PLAYER_HIT, heartNb = loss)
+                }
             }
+
+            if (isHumanPlayerHit) {
+                handleHumanPlayerWasHit()
+            } else if (isBotPlayerHit) {
+                handleBotPlayerWasHit()
+            }
+            botBuyCards(monsterName)
         }
     }
 
@@ -318,12 +347,10 @@ class GameFragment : Fragment() {
         }
     }
 
-    private fun handleHumanPlayerWasHit(loss: Int) {
+    private fun handleHumanPlayerWasHit() {
         leaveTokyoButton.visibility = View.VISIBLE
         leaveTokyoButton.isEnabled = true
         stayInTokyoButton.visibility = View.VISIBLE
-
-        displayCustomToast("You were hit!", ToastType.PLAYER_HIT, heartNb = loss)
     }
 
     private suspend fun handleBotPlayerWasHit() {
@@ -446,7 +473,7 @@ class GameFragment : Fragment() {
 
         dialogFragment.onDismissCallback = {
             updateAllPlayers()
-            mainViewModel.resetCards()
+           // mainViewModel.resetCards()
         }
 
 
