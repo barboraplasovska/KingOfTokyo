@@ -108,7 +108,8 @@ class MainViewModel : ViewModel() {
         return diceList.count { it.face == DiceFace.CLAW }
     }
 
-    fun getCardDescription(cardIndex: Int) : String? {
+    fun getCardDescription() : String? {
+        val cardIndex = selectedCard.value ?: -1
         return _cards.value?.let {
             it.getOrNull(cardIndex)?.description
         }

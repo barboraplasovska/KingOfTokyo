@@ -27,6 +27,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.kingoftokyo.R
 import com.example.kingoftokyo.core.viewModels.MainViewModel
 import com.example.kingoftokyo.core.enums.PlayerType
+import com.example.kingoftokyo.core.enums.ToastType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -319,8 +320,7 @@ class GameFragment : Fragment() {
         leaveTokyoButton.isEnabled = true
         stayInTokyoButton.visibility = View.VISIBLE
 
-        // show toast
-        displayLostLifeToast(loss)
+        displayCustomToast("You were hit!", ToastType.PLAYER_HIT, heartNb = loss)
     }
 
     private suspend fun handleBotPlayerWasHit() {
@@ -411,11 +411,23 @@ class GameFragment : Fragment() {
                     mainViewModel.playerApplyCardEffect()
 
                     openCardModalButton.visibility = View.GONE
+
+                    // FIXME: show modal what i bought
+
+                    dialogFragment.forceDismiss()
                 } else {
-                    displayToast("You can't afford this card!", isRed = true, player = mainViewModel.currentPlayer.value)
+                    var player = mainViewModel.getHumanPlayer()
+                    displayCustomToast(
+                        "You can't afford this card!",
+                        ToastType.PLAYER_CANT_AFFORD_CARD,
+                        energyNb = player.energyPoints
+                    )
                 }
             } else {
-                displayToast("You must select a card!", isRed = true)
+                displayCustomToast(
+                    "You must select a card!",
+                    ToastType.WARNING,
+               )
             }
         }
 
@@ -491,73 +503,76 @@ class GameFragment : Fragment() {
         card.setBackgroundResource(drawable)
     }
 
-    private fun displayToast(text: String = "Undefined", isRed: Boolean = false) {
-        val toastLayout = layoutInflater.inflate(R.layout.custom_toast_layout, null)
-        val toastText = toastLayout.findViewById<TextView>(R.id.toast_message)
-        toastText.text = text
-        toastText.setTextColor(if (isRed) Color.RED else Color.BLACK)
-        val toast = Toast(requireContext())
-        toast.duration = Toast.LENGTH_SHORT
-        toast.view = toastLayout
-        toast.setGravity(Gravity.TOP, 0, (Resources.getSystem().displayMetrics.heightPixels / 5))
-        toast.show()
-    }
-
-    private fun displayLostLifeToast(loss: Int) {
-        val toastLayout = layoutInflater.inflate(R.layout.custom_toast_layout, null)
-
-        val heartLayout = toastLayout.findViewById<LinearLayout>(R.id.heart_layout)
-        val toastMessage = toastLayout.findViewById<TextView>(R.id.toast_message)
-        val toastNumber = toastLayout.findViewById<TextView>(R.id.toast_number)
-
-        heartLayout.visibility = View.VISIBLE
-
-        toastMessage.text = "You were hit!"
-
-        toastNumber.text = "- $loss"
-        toastNumber.setTextColor(Color.RED)
-
-        val toast = Toast(requireContext())
-        toast.duration = Toast.LENGTH_SHORT
-        toast.view = toastLayout
-        toast.setGravity(Gravity.TOP, 0, (Resources.getSystem().displayMetrics.heightPixels / 5))
-        toast.show()
-    }
-
-    private fun displayToast(text: String = "Undefined", isRed: Boolean = false, player: PlayerModel? = null) {
+    private fun displayCustomToast(
+        message: String,
+        type: ToastType,
+        description: String? = null,
+        heartNb: Int? = null,
+        energyNb: Int? = null
+    ) {
+        // Inflate the custom toast layout
         val toastLayout = layoutInflater.inflate(R.layout.custom_toast_layout, null)
 
         // Get references to the views in the layout
-        val toastText = toastLayout.findViewById<TextView>(R.id.toast_message)
+        val toastMessage = toastLayout.findViewById<TextView>(R.id.toast_message)
         val toastMessageWithContent = toastLayout.findViewById<TextView>(R.id.toast_message_with_content)
+        val toastDescription = toastLayout.findViewById<TextView>(R.id.toast_description)
+
         val heartLayout = toastLayout.findViewById<LinearLayout>(R.id.heart_layout)
         val energyLayout = toastLayout.findViewById<LinearLayout>(R.id.energy_layout)
-        val toastNumber = toastLayout.findViewById<TextView>(R.id.toast_number)
-        val toastEnergyText = toastLayout.findViewById<TextView>(R.id.toast_energy_text)
 
-        // Set the message text
-        toastText.text = text
-        toastMessageWithContent.text = text
-        toastText.setTextColor(if (isRed) Color.RED else Color.BLACK)
-        toastMessageWithContent.setTextColor(if (isRed) Color.RED else Color.BLACK)
+        val heartText = toastLayout.findViewById<TextView>(R.id.heart_text)
+        val energyText = toastLayout.findViewById<TextView>(R.id.energy_text)
 
-        if (player != null) {
-            // If there's a player, show energy-related toast
-            toastText.visibility = View.GONE
-            toastMessageWithContent.visibility = View.VISIBLE
-            heartLayout.visibility = View.GONE
-            energyLayout.visibility = View.VISIBLE
-            toastEnergyText.text = "You have ${player.energyPoints}"
+        // Hide all views initially
+        toastMessage.visibility = View.GONE
+        toastMessageWithContent.visibility = View.GONE
+        toastDescription.visibility = View.GONE
+        heartLayout.visibility = View.GONE
+        energyLayout.visibility = View.GONE
 
-        } else {
-            // If no player (or if it's a card selection toast), show title only
-            toastText.visibility = View.VISIBLE
-            toastMessageWithContent.visibility = View.GONE
-            heartLayout.visibility = View.GONE
-            energyLayout.visibility = View.GONE
+        // Handle the different ToastTypes
+        when (type) {
+            ToastType.MESSAGE -> {
+                toastMessage.text = message
+                toastMessage.visibility = View.VISIBLE
+            }
+            ToastType.WARNING -> {
+                toastMessage.text = message
+                toastMessage.setTextColor(Color.RED)
+                toastMessage.visibility = View.VISIBLE
+            }
+            ToastType.MESSAGE_DESCRIPTION -> {
+                toastMessageWithContent.text = message
+                toastMessageWithContent.visibility = View.VISIBLE
+
+                description?.let {
+                    toastDescription.text = it
+                    toastDescription.visibility = View.VISIBLE
+                }
+            }
+            ToastType.PLAYER_HIT -> {
+                toastMessageWithContent.text = message
+                toastMessageWithContent.visibility = View.VISIBLE
+
+                heartNb?.let {
+                    heartText.text = "-$it"
+                    heartLayout.visibility = View.VISIBLE
+                }
+            }
+            ToastType.PLAYER_CANT_AFFORD_CARD -> {
+                toastMessageWithContent.text = message
+                toastMessageWithContent.visibility = View.VISIBLE
+                toastMessageWithContent.setTextColor(Color.RED)
+
+                energyNb?.let {
+                    energyText.text = "You have $it"
+                    energyLayout.visibility = View.VISIBLE
+                }
+            }
         }
 
-        // Create the toast and show it
+        // Create and show the toast
         val toast = Toast(requireContext())
         toast.duration = Toast.LENGTH_SHORT
         toast.view = toastLayout
