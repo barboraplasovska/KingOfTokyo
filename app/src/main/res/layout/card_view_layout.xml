@@ -16,7 +16,7 @@
         <!-- Image card -->
         <ImageView
             android:id="@+id/cardImage"
-            android:layout_width="120dp"
+            android:layout_width="110dp"
             android:layout_height="120dp"
             android:scaleType="centerCrop"
             android:src="@drawable/card_meteor"
@@ -56,17 +56,16 @@
                 android:elevation="4dp"/>
         </LinearLayout>
 
-        <!-- Card details -->
         <LinearLayout
             android:id="@+id/linearLayout"
-            android:layout_width="120dp"
-            android:layout_height="80dp"
+            android:layout_width="100dp"
+            android:layout_height="120dp"
             android:orientation="vertical"
             android:paddingHorizontal="3dp"
-            android:gravity="center_horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/cardImage">
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/cardImage">
 
-            <!-- Name card (texte en gras et centré) -->
             <TextView
                 android:id="@+id/cardName"
                 android:layout_width="wrap_content"
@@ -79,14 +78,13 @@
                 android:paddingBottom="2dp"
                 android:elevation="4dp"/>
 
-            <!-- Description card (texte centré) -->
             <TextView
                 android:id="@+id/cardDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="This is a description of the card."
                 android:textColor="#000000"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 android:gravity="center"
                 android:paddingBottom="3dp"
                 android:elevation="4dp"/>

@@ -71,8 +71,7 @@ class MainViewModel : ViewModel() {
 
     fun startCards() {
         if (_isCardFirstTime) {
-            val temporaryCards = cardService.getCards().shuffled().take(2)
-            _cards.postValue(temporaryCards)
+            resetCards()
             _isCardFirstTime = false
         }
     }
@@ -304,7 +303,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun resetCards() {
-        val newCards = cardService.getCards().shuffled().take(2)
+        val newCards = cardService.getCards().shuffled().take(3)
         _cards.postValue(newCards)
     }
 }

@@ -154,8 +154,9 @@ class GameFragment : Fragment() {
                     if (player.isInTokyo) {
                         displayCustomToast("Everyone except ${player.monsterName} was hit!", ToastType.PLAYER_HIT, heartNb = loss)
                     } else {
-                        val name = mainViewModel.getTokyoPlayer()?.monsterName ?: "Bot"
-                        displayCustomToast("${name} was hit!", ToastType.PLAYER_HIT, heartNb = loss)
+                        mainViewModel.getTokyoPlayer()?.let { tokyoPlayer ->
+                            displayCustomToast("${tokyoPlayer.monsterName} was hit!", ToastType.PLAYER_HIT, heartNb = loss)
+                        }
                     }
                     mainViewModel.botPlayerHit()
                     delay(2000)
@@ -163,7 +164,7 @@ class GameFragment : Fragment() {
                 mainViewModel.playerEnterTokyo()
 
                 updateAllPlayers()
-                delay(1000)
+                delay(500)
 
                 diceFragment.disableDiceAndButtons()
 

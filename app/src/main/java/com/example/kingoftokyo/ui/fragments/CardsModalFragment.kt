@@ -58,7 +58,8 @@ class CardsModalFragment : DialogFragment() {
 
         cardContainers = listOf(
             view.findViewById(R.id.cardsFragmentCard1),
-            view.findViewById(R.id.cardsFragmentCard2)
+            view.findViewById(R.id.cardsFragmentCard2),
+            view.findViewById(R.id.cardsFragmentCard3)
         )
 
         validateButton = view.findViewById(R.id.cardsFragmentValidateButton)
