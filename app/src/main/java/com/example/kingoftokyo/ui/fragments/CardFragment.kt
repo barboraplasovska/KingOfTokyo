@@ -53,7 +53,7 @@ class CardFragment : Fragment() {
             "Energy Hoarder" -> R.drawable.card_energy_hoarder
             "Regeneration Thunder" -> R.drawable.card_regeneration_thunder
             "Tactical Retreat" -> R.drawable.card_tactical_retreat
-            "Meteor" -> R.drawable.card_meteor
+            "Tokyo Meteor" -> R.drawable.card_meteor
             "Fortress" -> R.drawable.card_fortress
             "Wild Growth" -> R.drawable.card_wild_growth
             "Victory Parade" -> R.drawable.card_victory_parade
