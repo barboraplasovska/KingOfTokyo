@@ -146,12 +146,10 @@
             android:layout_height="50dp"
             android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/robotCard"
             android:layout_marginTop="40dp"
             android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/cards" />
+            android:src="@drawable/cards"
+            tools:ignore="MissingConstraints" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

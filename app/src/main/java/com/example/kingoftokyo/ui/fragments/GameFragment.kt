@@ -225,6 +225,9 @@ class GameFragment : Fragment() {
         mainViewModel.currentPlayer.observe(viewLifecycleOwner) { currentPlayer ->
             Log.d("GameFragment", "Current player: ${currentPlayer.monsterName}")
             updatePlayerBackground(currentPlayer)
+
+            openCardsButton.visibility = if (currentPlayer.playerType == PlayerType.BOT) View.GONE else View.VISIBLE
+
             diceFragment.resetDice()
 
             if (currentPlayer.isInTokyo) {
