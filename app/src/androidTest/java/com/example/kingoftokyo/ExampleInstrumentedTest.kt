@@ -1,7 +1,10 @@
 package com.example.kingoftokyo
 
+import PlayerModel
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.kingoftokyo.core.enums.PlayerType
+import com.example.kingoftokyo.core.services.GameService
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,5 +23,17 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.example.kingoftokyo", appContext.packageName)
+    }
+
+    @Test
+    fun testVictoryPointsGain() {
+        val player = PlayerModel("monster", 3,
+            2, 5, true, listOf(), PlayerType.HUMAN)
+        val gameService = GameService()
+        println("created gameService")
+        var list = mutableListOf(0, 4, 1)
+        println("created dices list")
+        gameService.applyVictoryEffects(player, list)
+        assertEquals(player.victoryPoints, 8)
     }
 }

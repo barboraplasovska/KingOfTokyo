@@ -2,4 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="yellow">#EEBF81</color>
+    <color name="red">#EE8181</color>
+    <color name="green">#B0EE81</color>
+    <color name="card">#EBE7DE</color>
 </resources>

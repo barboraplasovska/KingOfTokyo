@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/nav_graph"
+        app:startDestination="@id/welcomeFragment">
+
+    <!-- Welcome Fragment -->
+    <fragment
+            android:id="@+id/welcomeFragment"
+            android:name="com.example.kingoftokyo.ui.fragments.WelcomeFragment"
+            android:label="WelcomeFragment">
+        <action
+                android:id="@+id/action_welcomeFragment_to_pickMonsterFragment"
+                app:destination="@id/pickMonsterFragment" />
+    </fragment>
+
+    <!-- Pick Monster Fragment -->
+    <fragment
+            android:id="@+id/pickMonsterFragment"
+            android:name="com.example.kingoftokyo.ui.fragments.PickMonsterFragment"
+            android:label="PickMonsterFragment" >
+        <action
+                android:id="@+id/action_pickMonsterFragment_to_gameFragment"
+                app:destination="@id/gameFragment" />
+    </fragment>
+
+    <!-- Game Fragment -->
+    <fragment
+            android:id="@+id/gameFragment"
+            android:name="com.example.kingoftokyo.ui.fragments.GameFragment"
+            android:label="GameFragment">
+        <!-- Argument to receive the selected monster -->
+        <argument
+                android:name="selectedMonster"
+                app:argType="integer"
+                android:defaultValue="0" />
+
+        <action
+                android:id="@+id/action_gameFragment_to_welcomeFragment"
+                app:destination="@id/welcomeFragment" />
+    </fragment>
+
+</navigation>

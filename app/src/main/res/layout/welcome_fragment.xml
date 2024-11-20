@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/welcomeFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/primaryDarkColor"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="King of"
+        android:textSize="54sp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:layout_marginBottom="0dp"
+            android:elevation="4dp"/>
+
+        <TextView
+        android:id="@+id/subtitleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tokyo"
+        android:textSize="80sp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp"
+            android:elevation="4dp"/>
+
+        <ImageView
+        android:id="@+id/monsterImage"
+        android:layout_width="340dp"
+        android:layout_height="340dp"
+        android:src="@drawable/lizard"
+            android:layout_marginBottom="10dp"
+            android:elevation="4dp"/>
+
+        <Button
+        android:id="@+id/startButton"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/start_to_play"
+        android:backgroundTint="#f2c88d"
+        android:layout_marginTop="8dp"
+            android:elevation="4dp"/>
+</LinearLayout>
