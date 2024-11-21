@@ -91,8 +91,11 @@ class CardService {
 
    fun applyCardEffect(currentPlayer: PlayerModel, playerList: List<PlayerModel>, card: CardModel): Boolean {
       if (currentPlayer.energyPoints >= card.price) {
-         card.effect(currentPlayer, playerList, 0)
+         // 1. Charge him for the card
          currentPlayer.energyPoints -= card.price
+
+         // 2. Apply the card effect
+         card.effect(currentPlayer, playerList, 0)
          return true
       }
       return false

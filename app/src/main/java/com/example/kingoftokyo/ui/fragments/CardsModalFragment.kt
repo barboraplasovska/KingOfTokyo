@@ -104,6 +104,7 @@ class CardsModalFragment : DialogFragment() {
         validateButton.visibility = View.GONE
         cancelButton.visibility = View.GONE
         botBoughtTitle.visibility = View.VISIBLE
+        botBoughtTitle.text = "$botName bought this card:"
 
         mainViewModel.cards.observe(viewLifecycleOwner) { cards ->
             cardFragments[0].setCardData(cards[0])

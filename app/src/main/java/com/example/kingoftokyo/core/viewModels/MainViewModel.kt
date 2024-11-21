@@ -289,9 +289,9 @@ class MainViewModel : ViewModel() {
         val currentPlayer = _players[currentPlayerIndex]
         val players = _players
         _cards.value?.let { cards ->
-            if (botService.buyCards(currentPlayer, players, cards)) {
-                val bestAffordableCard = botService.bestAffordableCard(currentPlayer, cards)
-                return bestAffordableCard
+            val card: CardModel? = botService.buyCard(currentPlayer, players, cards)
+            if (card != null) {
+                return card
             }
         }
 

@@ -308,6 +308,7 @@ class GameFragment : Fragment() {
                     displayCustomToast("$name was hit!", ToastType.PLAYER_HIT, heartNb = loss)
                 }
             }
+            delay(1000)
 
             if (isHumanPlayerHit) {
                 handleHumanPlayerWasHit()
@@ -316,8 +317,9 @@ class GameFragment : Fragment() {
             } else if (isBotPlayerHit) {
                 handleBotPlayerWasHit()
             }
-            botBuyCards(monsterName)
             if (!isHumanPlayerHit) {
+                delay(1000)
+                botBuyCards(monsterName)
                 mainViewModel.nextPlayer()
             }
         }

@@ -113,24 +113,19 @@ class BotService(private val gameService: GameService, private val cardService: 
         }
     }
 
-    fun buyCards(botPlayer: PlayerModel, allPlayers: List<PlayerModel>, availableCards: List<CardModel>): Boolean {
+    fun buyCard(botPlayer: PlayerModel, allPlayers: List<PlayerModel>, availableCards: List<CardModel>): CardModel? {
         // Step 5: Card-buying logic
 
-        val affordableCards = availableCards.filter { it.price <= botPlayer.energyPoints }
-        if (affordableCards.isEmpty()) {
-            return false
-        }
-
-        return cardService.applyCardEffect(botPlayer, allPlayers, affordableCards.first())
-    }
-
-    fun bestAffordableCard(botPlayer: PlayerModel, availableCards: List<CardModel>): CardModel? {
         val affordableCards = availableCards.filter { it.price <= botPlayer.energyPoints }
         if (affordableCards.isEmpty()) {
             return null
         }
 
-        return affordableCards.first()
+        val randomCard: CardModel = affordableCards.random()
+
+        cardService.applyCardEffect(botPlayer, allPlayers, randomCard)
+
+        return randomCard
     }
 
     private fun shouldLeaveTokyo(botPlayer: PlayerModel): Boolean {

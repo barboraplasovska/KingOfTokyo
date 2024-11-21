@@ -1,4 +1,5 @@
 import com.example.kingoftokyo.core.enums.PlayerType
+import kotlin.math.min
 
 class PlayerModel(
     val monsterName: String,
@@ -48,7 +49,7 @@ class PlayerModel(
 
     fun heal(healing: Int) {
         if (lifePoints < 10)
-            lifePoints += healing
+            lifePoints = min(lifePoints + healing, 10)
     }
 
     fun gainEnergy(energy: Int) {
