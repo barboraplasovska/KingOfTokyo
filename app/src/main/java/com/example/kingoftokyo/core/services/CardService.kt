@@ -56,8 +56,8 @@ class CardService {
       CardModel(
          name = "Tokyo Meteor",
          price = 7,
-         description = "Deal 5 damage to each player in Tokyo.",
-         effect = { _, playerList, _ -> playerList.filter { it.isInTokyo }.forEach { it.takeDamage(5) } }
+         description = "Deal 5 damage to each player not in Tokyo.",
+         effect = { _, playerList, _ -> playerList.filter { !it.isInTokyo }.forEach { it.takeDamage(5) } }
       ),
       CardModel(
          name = "Fortress",

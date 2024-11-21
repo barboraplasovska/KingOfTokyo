@@ -159,7 +159,7 @@ class GameFragment : Fragment() {
                     }
                     mainViewModel.botPlayerHit()
                     delay(2000)
-                    if (mainViewModel.isGameOver())
+                    if (mainViewModel.checkGameStatus())
                         return@launch
                 }
                 mainViewModel.playerEnterTokyo()
@@ -306,7 +306,7 @@ class GameFragment : Fragment() {
 
             if (isHumanPlayerHit) {
                 handleHumanPlayerWasHit()
-                if (mainViewModel.isGameOver())
+                if (mainViewModel.checkGameStatus())
                     return@launch
             } else if (isBotPlayerHit) {
                 handleBotPlayerWasHit()
