@@ -133,10 +133,12 @@ class MainViewModel : ViewModel() {
         return _players.any { it.victoryPoints >= 20 } || _players.count { it.lifePoints > 0 } <= 1
     }
 
-    fun checkGameStatus() {
+    fun checkGameStatus() : Boolean {
         if (isGameOver()) {
             _isGameOver.postValue(true)
+            return true
         }
+        return false
     }
 
     fun wasHumanPlayerHit(diceList: List<DiceModel>) : Boolean {
@@ -181,7 +183,9 @@ class MainViewModel : ViewModel() {
 
     fun nextPlayer() {
         resetCards()
-        checkGameStatus()
+        if (checkGameStatus()) {
+            return
+        }
 
         currentPlayerIndex = (currentPlayerIndex + 1) % _players.size
 
@@ -300,8 +304,7 @@ class MainViewModel : ViewModel() {
 
     // Helper to update the currentPlayer LiveData
     private fun updateCurrentPlayer() {
-        checkGameStatus()
-        if (isGameOver())
+        if (checkGameStatus())
             return
 
         val newPlayer = _players[currentPlayerIndex].deepCopy()

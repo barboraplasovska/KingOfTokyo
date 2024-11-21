@@ -299,10 +299,10 @@ class GameFragment : Fragment() {
             if (tokyoPlayerName == monsterName) {
                 displayCustomToast("Everyone except ${monsterName} was hit!", ToastType.PLAYER_HIT, heartNb = loss)
             } else {
-                val name = tokyoPlayerName ?: "Bot"
+                val name: String? = tokyoPlayerName
                 if (isHumanPlayerHit) {
                     displayCustomToast("You were hit!", ToastType.PLAYER_HIT, heartNb = loss)
-                } else if (isBotPlayerHit) {
+                } else if (isBotPlayerHit && name != null) {
                     displayCustomToast("$name was hit!", ToastType.PLAYER_HIT, heartNb = loss)
                 }
             }
@@ -496,7 +496,9 @@ class GameFragment : Fragment() {
     // =======================
 
     private fun updateAllPlayers() {
-        mainViewModel.checkGameStatus()
+        if (mainViewModel.checkGameStatus()) {
+            return
+        }
         for (player in mainViewModel.getPlayers()) {
             updatePlayerCard(player)
         }
