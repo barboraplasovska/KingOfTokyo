@@ -1,9 +1,9 @@
 # King of Tokyo
 
 ## Authors
-barbora.plasovska
-bianca.onciul
-lilian.valentin
+barbora.plasovska <br>
+bianca.onciul <br>
+lilian.valentin <br>
 charlene.odiobo
 
 ## Video
