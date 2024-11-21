@@ -247,9 +247,8 @@ class MainViewModel : ViewModel() {
 
         val card = _cards.value?.getOrNull(selectedCard.value ?: -1)
         val currentPlayer = _players[currentPlayerIndex]
-        val players = _players
         card?.let {
-            return cardService.applyCardEffect(currentPlayer, players, card)
+            return cardService.applyCardEffect(currentPlayer, _players, card)
         }
 
         return false
@@ -287,9 +286,8 @@ class MainViewModel : ViewModel() {
 
     fun botBuyCards(): CardModel? {
         val currentPlayer = _players[currentPlayerIndex]
-        val players = _players
         _cards.value?.let { cards ->
-            val card: CardModel? = botService.buyCard(currentPlayer, players, cards)
+            val card: CardModel? = botService.buyCard(currentPlayer, _players, cards)
             if (card != null) {
                 return card
             }

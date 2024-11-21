@@ -15,12 +15,8 @@ class CardService {
          name = "Complete Destruction",
          price = 5,
          description = "Deal 3 damage to all other players.",
-         effect = { currentPlayer, playerList, _ ->
-            var list = playerList.toMutableList()
-            list.remove(currentPlayer)
-            list.forEach { it.takeDamage(3) }
-         }
-      ),
+         effect = { player, playerList, _ ->  playerList.filter { it != player }.forEach { it.takeDamage(3) } }
+            ),
       CardModel(
          name = "Healing Ray",
          price = 4,

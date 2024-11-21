@@ -193,9 +193,6 @@ class GameFragment : Fragment() {
                     botBuyCards(mainViewModel.currentPlayer.value!!.monsterName)
                 }
 
-                updateAllPlayers()
-                delay(2000)
-
                 mainViewModel.nextPlayer()
             }
         }
@@ -217,9 +214,6 @@ class GameFragment : Fragment() {
                 mainViewModel.currentPlayer.value?.let {
                     botBuyCards(mainViewModel.currentPlayer.value!!.monsterName)
                 }
-
-                updateAllPlayers()
-                delay(2000)
 
                 mainViewModel.nextPlayer()
             }
@@ -298,7 +292,7 @@ class GameFragment : Fragment() {
             val isHumanPlayerHit = mainViewModel.wasHumanPlayerHit(diceFragment.diceModels) && tokyoPlayerName != monsterName // if human was hit and he is in tokyo
             val isBotPlayerHit = mainViewModel.wasBotPlayerHit(diceFragment.diceModels)
 
-            if (tokyoPlayerName == monsterName) {
+            if (tokyoPlayerName == monsterName && loss != 0) {
                 displayCustomToast("Everyone except ${monsterName} was hit!", ToastType.PLAYER_HIT, heartNb = loss)
             } else {
                 val name: String? = tokyoPlayerName
@@ -348,9 +342,13 @@ class GameFragment : Fragment() {
     }
 
     private suspend fun botBuyCards(monsterName: String) {
+        delay(1000)
         val affordedCard = mainViewModel.botBuyCards()
         if (affordedCard != null) {
             showCardsModalForBot(monsterName)
+
+            delay(2000)
+            updateAllPlayers()
         }
     }
 
@@ -435,24 +433,27 @@ class GameFragment : Fragment() {
     private fun showCardsModalForPlayer() {
         val dialogFragment = CardsModalFragment.newInstance(ModalType.PLAYER_VIEW)
         dialogFragment.onDismissCallback = {
-           updateAllPlayers()
-
-           finishTurnButton.visibility = View.VISIBLE // he can finish his turn now
+            finishTurnButton.visibility = View.VISIBLE
         }
 
         dialogFragment.onValidateCardsCallback = {
             if (mainViewModel.hasUserSelectedCard()) {
                 if (mainViewModel.canUserBuyCard()) {
-                    mainViewModel.playerApplyCardEffect()
-
-                    openCardModalButton.visibility = View.GONE
-
-                    dialogFragment.forceDismiss()
-
                     viewLifecycleOwner.lifecycleScope.launch {
+                        mainViewModel.playerApplyCardEffect()
+
+                        openCardModalButton.visibility = View.GONE
+
+                        dialogFragment.forceDismiss()
+
                         mainViewModel.getSelectedCard()?.let { selectedCard ->
                             showPurchasedCardForPlayer(selectedCard)
                         }
+
+                        finishTurnButton.visibility = View.VISIBLE
+
+                        delay(1000)
+                        updateAllPlayers()
                     }
                 } else {
                     var player = mainViewModel.getHumanPlayer()
