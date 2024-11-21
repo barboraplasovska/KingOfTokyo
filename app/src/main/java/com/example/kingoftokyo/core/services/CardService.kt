@@ -37,7 +37,7 @@ class CardService {
          name = "Poison Lava",
          price = 3,
          description = "Deal 1 damage to all other players.",
-         effect = { _, playerList, _ -> playerList.forEach { it.takeDamage(1) } }
+         effect = { player, playerList, _ -> playerList.filter { it != player }.forEach { it.takeDamage(1) } }
       ),
       CardModel(
          name = "Energy Hoarder",

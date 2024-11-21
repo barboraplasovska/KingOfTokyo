@@ -7,7 +7,6 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.renderscript.Script.LaunchOptions
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -19,7 +18,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
@@ -30,7 +28,6 @@ import com.example.kingoftokyo.core.enums.ModalType
 import com.example.kingoftokyo.core.viewModels.MainViewModel
 import com.example.kingoftokyo.core.enums.PlayerType
 import com.example.kingoftokyo.core.enums.ToastType
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -499,6 +496,7 @@ class GameFragment : Fragment() {
     // =======================
 
     private fun updateAllPlayers() {
+        mainViewModel.checkGameStatus()
         for (player in mainViewModel.getPlayers()) {
             updatePlayerCard(player)
         }
